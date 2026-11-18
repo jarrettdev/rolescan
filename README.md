@@ -23,7 +23,8 @@ I just cloned this repo (rolescan). Get it running end to end, then set it up fo
    or DMing without asking me, change filters rather than code.
 2. Run ./setup.sh, ./doctor.sh and bin/run-once --fixtures fixtures/run1 --dry-run.
    Show me what each printed and stop if anything is not CORE_READY.
-3. Ask me these four things, then edit filters/active.json and nothing else:
+3. Ask me these four things, then edit filters/active.json only. Leave
+   filters/example.json alone: it is the contract the gate pins.
    - role titles or keywords to watch for
    - locations (cities, states, or "remote US")
    - minimum base pay
@@ -38,6 +39,8 @@ I just cloned this repo (rolescan). Get it running end to end, then set it up fo
 6. Ask me where alerts should go: terminal, webhook, or Discord. Only after I answer,
    update .env, confirm with ./doctor.sh --json, and stop before sending a test message.
 7. Print the two lines I should put in cron. Do not add a scheduler yourself.
+   If a gate mentions a missing NLC hub or a missing browser, tell me what to
+   install; do not invent a workaround or edit the gate.
 ```
 
 If you are on chatgpt.com with no file access, paste `llms.txt` and the output of
