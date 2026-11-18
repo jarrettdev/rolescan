@@ -1,99 +1,147 @@
 # rolescan
 
-A job scraper you can run for yourself: it finds new postings from employer
-ATS boards and (optionally) hiring.cafe, keeps a ledger so nothing is notified
-twice, and sends the matches wherever you want.
+Watches company hiring pages for new openings, keeps a list of what it has
+already seen, and tells you when something matches the searches you set. It
+does not apply for you, does not write resumes, and sends nothing anywhere
+except the alerts you choose.
 
-This is the find-and-notify core of a private scraper, repackaged. It does not
-write resumes, does not apply for you, and ships no credentials.
+## What you need
 
-## Requirements
+- Python 3.12+ and a terminal. Nothing else for the default path.
+- Optional: Chrome/Chromium, if you also want the hiring.cafe source.
+- Optional: a Discord bot token or a webhook URL, if you want alerts there
+  instead of your terminal.
 
-- Python 3.12+ (3.13 tested). No Node, no database.
-- Chrome or Chromium only if you enable the hiring.cafe scraper.
-
-## Quickstart
+## Two minutes to a first run
 
 ```bash
-./setup.sh          # venv, dependencies, .env from .env.example, filters/active.json
-./doctor.sh         # CORE_READY, plus LIVE_READY / BROWSER_READY as optional rows
-bin/run-once --fixtures fixtures/run1 --dry-run   # no network, no keys
+git clone https://github.com/jarrettdev/rolescan.git
+cd rolescan
+./setup.sh        # venv, dependencies, .env, filters/active.json
+./doctor.sh       # prints CORE_READY when it can run offline
+bin/run-once --fixtures fixtures/run1 --dry-run
 ```
 
-`bin/run-once --fixtures fixtures/run1 --dry-run` notifies the postings that
-match your filters. Edit `filters/active.json` and run it again.
+That last command prints the sample roles it would have pinged you about. No
+keys, no network, no state written.
 
-## Filters
+## Point it at the roles you want
 
-`filters/example.json` is the shipped contract; `setup.sh` copies it to
-`filters/active.json`, which is yours and gitignored. See `filters/README.md`
-for the shape, `blocked_companies`, `title_exclude`, and the JSON-Schema check
-`./doctor.sh` runs.
+Two files, both plain JSON/text:
 
-Typical lanes: a role (`"Software Engineer"`), a location preset, pay floor,
-years ceiling, seniority list. The default `title_exclude` drops senior titles
-but keeps Graduate, New Grad and Intern shapes.
-
-## Notify
-
-`NOTIFY` selects the target; the default is `print`.
-
-| Target | Keys |
+| File | What it controls |
 |---|---|
-| `print` | none |
-| `webhook` | `NOTIFY_WEBHOOK_URL` |
-| `discord` | `DISCORD_BOT_TOKEN`, `DISCORD_CHANNEL_ID`; DM also needs `ENABLE_DM=1` and `DM_USER_ID` |
+| `filters/active.json` | your searches: role titles, locations, pay floor, years, titles to skip, companies to block |
+| `companies.txt` | the company boards to poll (`<ats> <company>`, e.g. `greenhouse stripe`) |
 
-A missing or blank key stops the run with `MISSING_SECRET: <KEY>`. Nothing
-falls back to an empty token.
+`setup.sh` copies `filters/example.json` to `filters/active.json` on first run.
+That file is yours (gitignored); the example stays as the documented contract.
+`./doctor.sh` validates it and names the exact field when it is wrong.
 
-## Sources
-
-- **ATS boards** (`bin/ats-poll`): public Greenhouse, Lever, Ashby, Workable,
-  SmartRecruiters and Workday endpoints. A board enters the registry only after
-  its API answered 200. Seed the shipped examples, then add your own:
-
-  ```bash
-  bin/ats-registry seed                 # companies.txt, verified one by one
-  bin/ats-registry add greenhouse acme  # any board you know
-  bin/ats-registry show
-  ```
-
-  `companies.txt` is yours to edit. A fresh clone polls only what you seed.
-- **hiring.cafe** (`hc_scraper.py`): browser automation, enabled by default,
-  `ENABLE_HIRING_CAFE=0` turns it off. Read `docs/third-party.md` first:
-  terms, rate limits and captcha handling are your call.
-
-No scheduler ships. Run them yourself:
+Seed the company boards once:
 
 ```bash
-bin/ats-poll                                  # one poll, writes data/drop/*.csv
-xvfb-run -a python3 hc_scraper.py             # one scrape
-bin/run-once                                  # ingest every batch in data/drop
+bin/ats-registry seed                 # verifies every line in companies.txt
+bin/ats-registry add greenhouse acme  # or add one you know
+bin/ats-registry show                 # what you poll
 ```
 
-## Layout
+Add a search by appending to `filters/active.json`:
+
+```json
+{"name": "New grad and internships", "location": "US",
+ "overrides": {
+   "jobTitleQuery": "Intern OR Internship OR \"New Grad\" OR Graduate",
+   "technologyKeywordsQuery": "Python OR SQL",
+   "searchQuery": ""}}
+```
+
+`title_exclude` at the bottom of the file keeps senior titles out by default
+and leaves Graduate/New Grad/Intern shapes alone.
+
+## Choose where alerts go
+
+| `NOTIFY` | Keys you need |
+|---|---|
+| `print` (default) | none |
+| `webhook` | `NOTIFY_WEBHOOK_URL` |
+| `discord` | `DISCORD_BOT_TOKEN`, `DISCORD_CHANNEL_ID`; a DM also needs `ENABLE_DM=1` and `DM_USER_ID` |
+
+Put them in `.env` (created by setup, gitignored for good reason). A blank or
+missing key stops the run with `MISSING_SECRET: <KEY>` instead of posting
+something broken.
+
+## Run it
+
+No scheduler ships: run the two steps yourself, from cron or a timer.
+
+```bash
+bin/ats-poll     # read the company boards once; writes data/drop/*.csv
+bin/run-once     # ingest what is waiting and notify
+```
+
+```cron
+*/30 * * * * cd ~/rolescan && ./bin/ats-poll   >> ~/rolescan-data/poll.log 2>&1
+*/15 * * * * cd ~/rolescan && ./bin/run-once   >> ~/rolescan-data/run.log  2>&1
+```
+
+The hiring.cafe source is browser automation and is opt-in by policy, not just
+by flag: read `docs/third-party.md` first, then
+`xvfb-run -a python3 hc_scraper.py`. `ENABLE_HIRING_CAFE=0` turns it off.
+
+## Use your AI assistant to drive it
+
+The repo tells a model what it may do: `AGENTS.md` is the rules, `CLAUDE.md` is
+the same for Claude Code, `llms.txt` is a compact brief you can paste into
+ChatGPT or any chat. `docs/tasks.json` maps a task to the files and the gate.
+
+Prompts that work, verbatim:
+
+- **First setup**: "Read AGENTS.md and README.md, then run `./setup.sh`,
+  `./doctor.sh`, and `bin/run-once --fixtures fixtures/run1 --dry-run`. Show me
+  the output and tell me if anything is missing."
+- **Your searches**: "Using `filters/example.json` and `filters/schema.json`, add
+  a lane for new-grad and internship software roles in the US. Run `./doctor.sh`
+  and the fixture run, and show me which sample roles now match."
+- **Alerts**: "Switch `NOTIFY` to discord. Ask me for the bot token and channel
+  id, write them to `.env`, and confirm with `./doctor.sh --json`. Do not send a
+  test message without asking me."
+- **Add an employer**: "Add `greenhouse <company>` with `bin/ats-registry add`,
+  then show me `bin/ats-registry show`."
+- **Something failed**: "Run `bin/check.sh`, read the failing gate, and fix the
+  constraint that caused it. Do not edit tests, gates, or the check to make it
+  green."
+- **ChatGPT with no file access**: paste `llms.txt` plus the output of
+  `./doctor.sh --json` and ask for the next step. It cannot run commands for
+  you, but it can interpret the errors.
+
+## When it looks broken
+
+| Symptom | Cause and fix |
+|---|---|
+| `MISSING_SECRET: X` | that key is absent or blank in `.env`; `./doctor.sh` names it |
+| `CORE_NOT_READY` | run `./setup.sh`; doctor lists what is missing |
+| `matched=0` | filters too narrow, or postings older than the 72 h freshness window; loosen pay/years or widen `dateFetchedPastNDays` |
+| Discord `403` | bad token, wrong channel, or the bot cannot post there |
+| browser `WARN` | run `./setup.sh --browser` and install Chrome, or ignore it and use the boards |
+
+## How it is built
 
 | Path | What |
 |---|---|
 | `process_stream.py`, `bin/run-once` | ingest one batch, notify matches |
 | `hc_scraper.py` | hiring.cafe scrape into the drop folder |
-| `bin/ats-poll`, `bin/ats-registry` | employer-board poller and its registry |
+| `bin/ats-poll`, `bin/ats-registry` | company-board poller and its registry |
 | `values/`, `domain/`, `goals/` | pure rules, nouns with private state, pure goals |
 | `adapters/` | the only code that talks to the network |
-| `filters/` | your saved searches |
 | `data/` | ledger, registry, drop folder, caches (gitignored) |
-| `docs/`, `adrs/`, `rules/` | agent map, decisions, invariants |
 
-## Gates
-
-```bash
-bin/check.sh        # compile, secrets, doctor, tests, fixture run, clean tree
-bin/check-nlc.sh    # rule coverage, rule IR, call tree (needs NLC 0.8.0)
-```
+Gates: `bin/check.sh` (offline: compile, secrets, doctor, tests, fixture run,
+clean tree) and `bin/check-nlc.sh` (rules, rule IR, call tree; NLC 0.8.0).
+`AGENTS.md` has the rules a contributor or an agent must follow.
 
 ## Provenance and licence
 
 Copied from a private upstream at the commit in `SOURCE_COMMIT`; see
-`PROVENANCE.md` and `MANIFEST.txt`. MIT (see `LICENSE`). Nothing here is legal
-advice; see `docs/third-party.md`.
+`PROVENANCE.md` and `MANIFEST.txt`. MIT (see `LICENSE`). Third-party sites,
+limits and captcha policy: `docs/third-party.md`.
