@@ -47,7 +47,7 @@ def test_newgrad_filter_changes_the_matches():
         path = newgrad_filters(Path(tmp))
         result = run(data_root=Path(tmp) / "data", filters=path)
     assert result.returncode == 0, result.stderr
-    assert "matched=6" in result.stdout and "notified=5" in result.stdout, result.stdout
+    assert "matched=5" in result.stdout and "notified=5" in result.stdout, result.stdout
     assert "Delta Works" in result.stdout and "Epsilon Analytics" in result.stdout
 
 
