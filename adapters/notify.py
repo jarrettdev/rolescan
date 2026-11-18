@@ -16,7 +16,7 @@ from dataclasses import asdict, dataclass
 from adapters.config import MissingSecret
 
 API = "https://discord.com/api/v10"
-USER_AGENT = "job-scraper-kit/0.1.0 (+https://github.com/jarrettdev/job-scraper-kit)"
+USER_AGENT = "rolescan/0.1.0 (+https://github.com/jarrettdev/rolescan)"
 
 
 class NotifyError(RuntimeError):

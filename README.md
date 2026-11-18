@@ -1,4 +1,4 @@
-# job-scraper-kit
+# rolescan
 
 A job scraper you can run for yourself: it finds new postings from employer
 ATS boards and (optionally) hiring.cafe, keeps a ledger so nothing is notified

@@ -85,6 +85,10 @@ def main(argv: list[str]) -> int:
     for rule in AGENTS_RULES:
         if rule not in agents:
             problems.append(f"AGENTS.md lost the rule: {rule!r}")
+    for name, needle in (("CLAUDE.md", "AGENTS.md"), ("llms.txt", "bin/check.sh")):
+        path = ROOT / name
+        if not path.exists() or needle not in path.read_text():
+            problems.append(f"{name} missing or no longer points at {needle}")
     third = (ROOT / "docs" / "third-party.md").read_text()
     if "HC_SOLVE_CAPTCHA" not in third:
         problems.append("docs/third-party.md lost the captcha-opt-in line")

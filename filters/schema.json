@@ -1,6 +1,6 @@
 {
  "$schema": "https://json-schema.org/draft/2020-12/schema",
- "title": "job-scraper-kit filters",
+ "title": "rolescan filters",
  "type": "object",
  "required": [
   "note",
