@@ -16,7 +16,9 @@ def test_every_active_lane_parses():
     assert len(lanes) == len(doc["filters"]) >= 1
     for lane in lanes:
         assert lane.title_query is not None, lane.name
-        assert lane.yoe_max >= 3 and lane.pay_min == int(doc["base"]["minCompensationLowEnd"]), lane
+        ceiling = int((lane.config.get("roleYoeRange") or [0, 99])[1])
+        assert lane.yoe_max == ceiling, lane
+        assert lane.pay_min == int(lane.config.get("minCompensationLowEnd") or 0), lane
 
 
 def test_words_not_substrings():

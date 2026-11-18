@@ -98,7 +98,10 @@ Add a search by appending to `filters/active.json`:
 ```
 
 `title_exclude` at the bottom of the file keeps senior titles out by default
-and leaves Graduate/New Grad/Intern shapes alone.
+and leaves Graduate/New Grad/Intern shapes alone. The pay floor and the years
+ceiling apply to both the company boards and the ingest step; hourly pay is not
+a yearly figure, so a floor never rejects an internship that only quotes an
+hourly rate. `filters/README.md` has the field-by-field table.
 
 ## Choose where alerts go
 

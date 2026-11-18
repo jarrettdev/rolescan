@@ -27,8 +27,20 @@ Each `filters[]` entry is `base`, then the named location preset, then its own
 `overrides`. `jobTitleQuery`, `technologyKeywordsQuery` and `searchQuery` use
 quoted terms, bare words, `AND`, `OR`, `NOT` and parentheses.
 
-- `blocked_companies` drops a company everywhere (lowercase, exact on the
-  company name).
+Which field is read where:
+
+| Field | Ingest (`bin/run-once`) | Company boards (`bin/ats-poll`) | hiring.cafe search |
+|---|---|---|---|
+| `jobTitleQuery`, `technologyKeywordsQuery`, `searchQuery` | yes, on the row | yes, against title + description | yes, sent to the site |
+| `minCompensationLowEnd` | yes, when the row states a yearly figure | yes, and a posting with no stated figure is dropped when `restrictJobsToTransparentSalaries` is true | yes |
+| `roleYoeRange` upper bound | yes, when the row states years | yes | yes |
+| `seniorityLevel`, `workplaceTypes`, `dateFetchedPastNDays` | no | no | yes, search parameters |
+| `blocked_companies`, `title_exclude` | yes | yes | no (applied after the search) |
+
+`blocked_companies` drops a company everywhere (lowercase, exact on the
+company name).
+Hourly pay (`$45/hour`) is not a yearly figure, so a pay floor never compares
+against it; an internship that states only an hourly rate passes the floor.
 - `title_exclude` is a regex of title words never to notify. The default drops
   senior titles but keeps **Graduate**, **New Grad** and **Intern** shapes, so
   an early-career search works out of the box.

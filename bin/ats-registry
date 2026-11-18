@@ -3,6 +3,8 @@
 (adrs/0015).
 
     bin/ats-registry build [--limit N] [--budget SECONDS]
+    bin/ats-registry seed [--file companies.txt]
+    bin/ats-registry add <ats> <tenant>
     bin/ats-registry show
 
 build: candidates come from the ledger, the jobs_*.json archive and

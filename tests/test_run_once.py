@@ -98,3 +98,17 @@ if __name__ == "__main__":
     for t in tests:
         t()
     print(f"RUN_ONCE:MET {len(tests)} tests")
+
+
+def test_pay_floor_is_honoured_on_the_ingest_path():
+    import tempfile
+    with tempfile.TemporaryDirectory() as tmp:
+        doc = json.loads(EXAMPLE.read_text())
+        for lane in doc["filters"]:
+            lane["overrides"]["minCompensationLowEnd"] = "90000"
+        path = Path(tmp) / "filters.json"
+        path.write_text(json.dumps(doc))
+        result = run(data_root=Path(tmp) / "data", filters=path)
+    assert result.returncode == 0, result.stderr
+    assert "Epsilon Analytics" not in result.stdout, "a posting below the pay floor still matched"
+    assert "Acme Systems" in result.stdout, "the floor removed a posting above it"

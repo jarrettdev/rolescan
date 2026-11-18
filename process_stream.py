@@ -54,6 +54,18 @@ def batch_time(path: Path) -> datetime:
     return datetime.fromtimestamp(path.stat().st_mtime)
 
 
+def lane_fits(lane, row: dict) -> bool:
+    """Pay floor and years ceiling, the same reading the board poller uses."""
+    text = "\n".join(str(row.get(key) or "") for key in ("Title", "Description", "Salary"))
+    pay = L.stated_pay(text)
+    if pay and lane.pay_min and pay[1] < lane.pay_min:
+        return False
+    years = L.required_years(text)
+    if years is not None and lane.yoe_max and years > lane.yoe_max:
+        return False
+    return True
+
+
 def match_lanes(frame: pd.DataFrame, lanes: list) -> pd.DataFrame:
     """Rows a configured lane accepts, with the lane name attached."""
     if frame.empty:
@@ -61,7 +73,7 @@ def match_lanes(frame: pd.DataFrame, lanes: list) -> pd.DataFrame:
     keep = []
     for index, row in zip(frame.index, frame.to_dict("records")):
         lane = L.lane_for(row.get("Title"), row.get("Description"), lanes)
-        if lane:
+        if lane and lane_fits(lane, row):
             keep.append((index, lane.name))
     if not keep:
         return frame.iloc[0:0].assign(lane=[])
