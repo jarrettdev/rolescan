@@ -10,6 +10,15 @@ Selection is the pure goal select-ats-postings. A posting is marked emitted in
 the registry only after its CSV is written. --dry-run fetches and selects but
 writes nothing. Company enrichment is off unless ENRICH=1.
 """
+
+import os
+import sys
+from pathlib import Path as _Path
+
+_VENV = _Path(__file__).resolve().parents[1] / "venv" / "bin" / "python"
+if __name__ == "__main__" and _VENV.exists() and _Path(sys.executable) != _VENV:
+    os.execv(str(_VENV), [str(_VENV), str(_Path(__file__).resolve()), *sys.argv[1:]])
+
 import argparse
 import csv
 import fcntl

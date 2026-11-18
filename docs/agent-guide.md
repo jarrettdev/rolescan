@@ -9,7 +9,7 @@ Read `AGENTS.md` first: its rules override anything here.
 | **filters**: Change which jobs are selected: roles, locations, pay, blocked companies, titles | `filters/example.json`, `filters/schema.json`, `filters/README.md`, `filters/active.json` | `doctor.sh` | `fixtures/run1` |
 | **notify**: Change where matches go: print, webhook, Discord channel or DM | `adapters/notify.py`, `adapters/config.py`, `.env.example` | `bin/check.sh` | `tests/test_notify.py` |
 | **ingest**: Change how a scraped batch becomes notifications (dedupe, title exclusion, lane matching) | `process_stream.py`, `goals/ingest-listings/implementation.py`, `domain/ledger/ledger.py` | `bin/check.sh` | `fixtures/run1` |
-| **sources**: Add or change a job source (scraper or ATS board poller) | `hc_scraper.py`, `bin/ats-poll`, `adapters/ats.py`, `goals/select-listings/implementation.py` | `bin/check.sh` | `tests/test_ats_poll.py` |
+| **sources**: Add or change a job source (scraper or ATS board poller) | `hc_scraper.py`, `bin/ats-poll`, `bin/ats-registry`, `companies.txt`, `adapters/ats.py`, `goals/select-listings/implementation.py` | `bin/check.sh` | `tests/test_ats_poll.py` |
 | **rules**: Add or retire an invariant: rule marker, adopted list, enforcement entry | `rules/adopted.json`, `rules/enforced_by.json`, `adrs/` | `bin/check-nlc.sh` | `rules/adopted.json` |
 | **release**: Cut a release: provenance, manifest, tarball | `MANIFEST.txt`, `PROVENANCE.md`, `SOURCE_COMMIT` | `bin/check.sh` | `MANIFEST.txt` |
 

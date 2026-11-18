@@ -51,7 +51,15 @@ falls back to an empty token.
 
 - **ATS boards** (`bin/ats-poll`): public Greenhouse, Lever, Ashby, Workable,
   SmartRecruiters and Workday endpoints. A board enters the registry only after
-  its API answered 200. `bin/ats-registry show` prints what you have.
+  its API answered 200. Seed the shipped examples, then add your own:
+
+  ```bash
+  bin/ats-registry seed                 # companies.txt, verified one by one
+  bin/ats-registry add greenhouse acme  # any board you know
+  bin/ats-registry show
+  ```
+
+  `companies.txt` is yours to edit. A fresh clone polls only what you seed.
 - **hiring.cafe** (`hc_scraper.py`): browser automation, enabled by default,
   `ENABLE_HIRING_CAFE=0` turns it off. Read `docs/third-party.md` first:
   terms, rate limits and captcha handling are your call.

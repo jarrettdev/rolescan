@@ -12,6 +12,15 @@ API and added only on a 200; each Greenhouse custom domain is mapped to its
 board only when the embed redirect names a board whose API job shows that
 domain. Prints one summary line. A second build while one runs exits 2.
 """
+
+import os
+import sys
+from pathlib import Path as _Path
+
+_VENV = _Path(__file__).resolve().parents[1] / "venv" / "bin" / "python"
+if __name__ == "__main__" and _VENV.exists() and _Path(sys.executable) != _VENV:
+    os.execv(str(_VENV), [str(_VENV), str(_Path(__file__).resolve()), *sys.argv[1:]])
+
 import argparse
 import fcntl
 import glob
@@ -142,9 +151,40 @@ def main(argv=None):
     b = sub.add_parser("build")
     b.add_argument("--limit", type=int, default=None, help="verify at most N new boards and N hosts")
     b.add_argument("--budget", type=int, default=3600, help="stop requesting after this many seconds")
+    seed = sub.add_parser("seed", help="verify and add the boards in companies.txt")
+    seed.add_argument("--file", default=str(ROOT / "companies.txt"))
+    add = sub.add_parser("add", help="verify and add one board")
+    add.add_argument("ats")
+    add.add_argument("tenant")
     sub.add_parser("show")
     a = ap.parse_args(argv)
     reg = AtsRegistry()
+    if a.cmd in ("seed", "add"):
+        client = A.Client(budget_s=300)
+        if a.cmd == "add":
+            entries = [(a.ats, a.tenant)]
+        else:
+            entries = []
+            for line in Path(a.file).read_text().splitlines():
+                line = line.strip()
+                if not line or line.startswith("#"):
+                    continue
+                ats, _, tenant = line.partition(" ")
+                entries.append((ats.strip(), tenant.strip()))
+        added, failed = 0, []
+        known = {(b["ats"], b["tenant"]) for b in reg.boards()}
+        for ats, tenant in entries:
+            if (ats, tenant) in known:
+                continue
+            status = A.verify_board(client, {"ats": ats, "tenant": tenant})
+            if status == 200:
+                added += reg.add_board(ats, tenant, verified_status=200, source="seed")
+            else:
+                failed.append(f"{ats}:{tenant} {status}")
+        print(f"ATS_REGISTRY_SEED: added={added} known={len(known)} failed={len(failed)}")
+        for line in failed:
+            print(f"  not added: {line}")
+        return 0 if not failed else 1
     if a.cmd == "show":
         by = {}
         for brd in reg.boards():

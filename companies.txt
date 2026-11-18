@@ -1,0 +1,7 @@
+# Boards to poll. One "<ats> <tenant>" per line; blank lines and # comments ignored.
+# `bin/ats-registry seed` verifies each through its public API and adds it only on 200.
+greenhouse stripe
+greenhouse figma
+greenhouse datadog
+greenhouse gitlab
+ashby linear
