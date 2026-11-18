@@ -95,7 +95,8 @@ def test_hc_scraper_builds_configs_here():
     c = L.effective_configs(doc)[0]["config"]
     assert c["locations"] == doc["locations"][doc["filters"][0].get("location", "US")]
     assert c["jobTitleQuery"] == doc["filters"][0]["overrides"]["jobTitleQuery"]
-    assert c["minCompensationLowEnd"] == doc["base"]["minCompensationLowEnd"]
+    expected_pay = doc["filters"][0]["overrides"].get("minCompensationLowEnd", doc["base"]["minCompensationLowEnd"])
+    assert c["minCompensationLowEnd"] == expected_pay
     del importlib
 
 
