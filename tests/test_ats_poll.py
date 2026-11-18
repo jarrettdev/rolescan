@@ -20,10 +20,9 @@ sys.path.insert(0, str(ROOT / "domain" / "ats_registry"))
 from adapters import ats as A  # noqa: E402
 from ats_registry import AtsRegistry  # noqa: E402
 
-loader = importlib.machinery.SourceFileLoader("ats_poll_bin", str(ROOT / "bin" / "ats-poll"))
-spec = importlib.util.spec_from_loader("ats_poll_bin", loader)
-P = importlib.util.module_from_spec(spec)
-loader.exec_module(P)
+import importlib
+sys.path.insert(0, str(ROOT))
+P = importlib.import_module("adapters.ats_poll")
 
 NOW = datetime(2026, 10, 24, 6, 0, tzinfo=timezone.utc)
 IDLE = {"batch": False, "regen": False}
@@ -208,7 +207,7 @@ def test_dry_run_looks_nothing_up():
 
 
 def test_drop_folder_lives_under_the_data_root():
-    for f in ("process_stream.py", "hc_scraper.py", "bin/ats-poll"):
+    for f in ("process_stream.py", "hc_scraper.py", "adapters/ats_poll.py"):
         text = (ROOT / f).read_text()
         private_home = "/home/" + "scraper"
         assert '"drop"' in text and private_home not in text, f

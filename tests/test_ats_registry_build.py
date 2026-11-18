@@ -15,10 +15,8 @@ sys.path.insert(0, str(ROOT / "domain" / "ats_registry"))
 from adapters import ats as A  # noqa: E402
 from ats_registry import AtsRegistry  # noqa: E402
 
-loader = importlib.machinery.SourceFileLoader("ats_registry_bin", str(ROOT / "bin" / "ats-registry"))
-spec = importlib.util.spec_from_loader("ats_registry_bin", loader)
-BIN = importlib.util.module_from_spec(spec)
-loader.exec_module(BIN)
+import importlib
+BIN = importlib.import_module("adapters.ats_registry_cli")
 
 GH, EMB, SR = A.BASES["greenhouse"], A.BASES["greenhouse_embed"], A.BASES["smartrecruiters"]
 
