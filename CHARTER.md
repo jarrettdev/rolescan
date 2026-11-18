@@ -1,6 +1,6 @@
 # Charter
 
-This package uses Boundary-Based Programming / Natural Language Coding (NLC).
+This package uses Boundary-Based Programming / Natural Language Compiler (NLC).
 
 - Compiler: NLC **0.8.0** (pinned in `.nlc/lock.json`, launcher `./nlc`).
 - SSOT for the method: https://github.com/Zygotic-AI/Natural-Language-Compiler/blob/main/CHARTER.md

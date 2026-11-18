@@ -89,6 +89,9 @@ def main(argv: list[str]) -> int:
         path = ROOT / name
         if not path.exists() or needle not in path.read_text():
             problems.append(f"{name} missing or no longer points at {needle}")
+    for name in ("README.md", "CHARTER.md", "llms.txt"):
+        if "Natural Language Coding" in (ROOT / name).read_text():
+            problems.append(f"{name} still uses the old product name (Natural Language Coding)")
     readme = (ROOT / "README.md").read_text()
     if "https://github.com/Zygotic-AI/Natural-Language-Compiler" not in readme:
         problems.append("README.md lost the NLC link")
