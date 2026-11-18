@@ -14,6 +14,7 @@
 - ./setup.sh            venv, deps, .env from .env.example, filters/active.json from filters/example.json
 - ./doctor.sh           CORE_READY (offline), plus LIVE_READY and BROWSER_READY as optional rows
 - bin/run-once --fixtures fixtures/run1 --dry-run    first run, no keys, no network
+- bin/personas                                      four test users (intern, new-grad, swe, data) to data/results/*.csv, no keys
 
 ## Gates
 - bin/check.sh          compile, secret scan, doctor, tests, fixture run, clean tree

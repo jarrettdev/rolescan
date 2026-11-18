@@ -70,6 +70,17 @@
       ],
       "gate": "bin/check.sh",
       "fixture": "MANIFEST.txt"
+    },
+    {
+      "id": "personas",
+      "task": "Check the whole path with no keys: four test users write CSV results from the fixtures",
+      "files": [
+        "bin/personas",
+        "filters/personas",
+        "process_stream.py"
+      ],
+      "gate": "bin/check.sh",
+      "fixture": "fixtures/run1"
     }
   ]
 }

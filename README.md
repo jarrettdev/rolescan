@@ -66,6 +66,27 @@ bin/run-once --fixtures fixtures/run1 --dry-run
 That last command prints the sample roles it would have pinged you about. No
 keys, no network, no state written.
 
+Four test users are included, so you can see the whole path in a few seconds
+and get files back instead of scrolling a terminal:
+
+```bash
+bin/personas
+cat data/results/intern.csv
+```
+
+```
+persona    rows  matches
+data       2     rows=5 matched=2 ...
+intern     1     rows=5 matched=1 ...
+new-grad   1     rows=5 matched=1 ...
+swe        1     rows=5 matched=1 ...
+PERSONAS:MET (csvs in .../data/results)
+```
+
+Each persona is an ordinary filters document in `filters/personas/` (intern,
+new-grad, swe, data). Copy one to `filters/active.json` as a starting point, or
+edit it in place to see how a change moves the CSV.
+
 ## Point it at the roles you want
 
 Two files, both plain JSON/text:

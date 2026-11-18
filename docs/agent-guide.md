@@ -12,6 +12,7 @@ Read `AGENTS.md` first: its rules override anything here.
 | **sources**: Add or change a job source (scraper or ATS board poller) | `hc_scraper.py`, `bin/ats-poll`, `bin/ats-registry`, `companies.txt`, `adapters/ats.py`, `goals/select-listings/implementation.py` | `bin/check.sh` | `tests/test_ats_poll.py` |
 | **rules**: Add or retire an invariant: rule marker, adopted list, enforcement entry | `rules/adopted.json`, `rules/enforced_by.json`, `adrs/` | `bin/check-nlc.sh` | `rules/adopted.json` |
 | **release**: Cut a release: provenance, manifest, tarball | `MANIFEST.txt`, `PROVENANCE.md`, `SOURCE_COMMIT` | `bin/check.sh` | `MANIFEST.txt` |
+| **personas**: Check the whole path with no keys: four test users write CSV results from the fixtures | `bin/personas`, `filters/personas`, `process_stream.py` | `bin/check.sh` | `fixtures/run1` |
 
 ## Loop
 

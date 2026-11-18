@@ -1,0 +1,121 @@
+{
+ "note": "Test user: new-grad roles, 0-2 years. No keys, no network: fixtures only.",
+ "base": {
+  "restrictJobsToTransparentSalaries": true,
+  "maxCompensationLowEnd": "400000",
+  "seniorityLevel": [
+   "No Prior Experience Required",
+   "Entry Level",
+   "Mid Level"
+  ],
+  "sortBy": "date",
+  "hideJobTypes": [
+   "Saved"
+  ],
+  "roleYoeRange": [
+   0,
+   2
+  ],
+  "doctorateDegreeRequirements": [
+   "Preferred",
+   "Not Mentioned"
+  ],
+  "roleTypes": [
+   "Individual Contributor"
+  ],
+  "minCompensationLowEnd": "0",
+  "workplaceTypes": [
+   "Remote",
+   "Hybrid",
+   "Onsite"
+  ],
+  "mastersDegreeRequirements": [
+   "Preferred",
+   "Not Mentioned"
+  ],
+  "dateFetchedPastNDays": 7
+ },
+ "locations": {
+  "US": [
+   {
+    "formatted_address": "United States",
+    "types": [
+     "country"
+    ],
+    "geometry": {
+     "location": {
+      "lat": "34.0544",
+      "lon": "-118.244"
+     }
+    },
+    "id": "user_country",
+    "address_components": [
+     {
+      "long_name": "United States",
+      "short_name": "US",
+      "types": [
+       "country"
+      ]
+     }
+    ],
+    "options": {
+     "flexible_regions": [
+      "anywhere_in_continent",
+      "anywhere_in_world"
+     ]
+    }
+   }
+  ],
+  "US_ALT": [
+   {
+    "formatted_address": "United States",
+    "types": [
+     "country"
+    ],
+    "geometry": {
+     "location": {
+      "lat": "37.751",
+      "lon": "-97.822"
+     }
+    },
+    "id": "user_country",
+    "address_components": [
+     {
+      "long_name": "United States",
+      "short_name": "US",
+      "types": [
+       "country"
+      ]
+     }
+    ],
+    "options": {
+     "flexible_regions": [
+      "anywhere_in_continent",
+      "anywhere_in_world"
+     ]
+    }
+   }
+  ]
+ },
+ "filters": [
+  {
+   "name": "New grad",
+   "overrides": {
+    "jobTitleQuery": "\"New Grad\" OR Graduate OR \"Entry Level\" OR Junior",
+    "technologyKeywordsQuery": "Python OR SQL OR Software",
+    "searchQuery": ""
+   },
+   "location": "US"
+  }
+ ],
+ "blocked_companies": [],
+ "title_exclude": [
+  "Senior",
+  "Staff",
+  "Manager",
+  "Lead",
+  "Principal",
+  "Sr",
+  "SR"
+ ]
+}

@@ -1,0 +1,30 @@
+#!/usr/bin/env bash
+# Four test users, offline: run every persona in filters/personas/ against the
+# fixtures and write one CSV each under $JOBKIT_DATA/results/.
+#   bin/personas
+# No keys, no network, no browser.
+set -uo pipefail
+HERE="$(cd "$(dirname "$(readlink -f "${BASH_SOURCE[0]}")")/.." && pwd)"
+PY="$HERE/venv/bin/python"
+[ -x "$PY" ] || PY=python3
+OUT="${JOBKIT_DATA:-$HERE/data}/results"
+mkdir -p "$OUT"
+rc=0
+printf '%-10s %-5s %s\n' "persona" "rows" "matches"
+for filters in "$HERE"/filters/personas/*.json; do
+  [ -f "$filters" ] || continue
+  name="$(basename "$filters" .json)"
+  output=$(NOTIFY=print "$PY" "$HERE/process_stream.py" --fixtures "$HERE/fixtures/run1" \
+             --dry-run --filters "$filters" --csv "$OUT/$name.csv" 2>&1)
+  rows=$(printf '%s\n' "$output" | sed -n 's/^csv=.* rows=\([0-9][0-9]*\)$/\1/p' | tail -1)
+  rows=${rows:-0}
+  summary=$(printf '%s\n' "$output" | grep -E '^batches=' | tail -1)
+  printf '%-10s %-5s %s\n' "$name" "$rows" "${summary#batches=1 }"
+  [ "$rows" -gt 0 ] || { echo "  no rows for $name: check $filters"; rc=1; }
+done
+if [ "$rc" -eq 0 ]; then
+  echo "PERSONAS:MET (csvs in $OUT)"
+else
+  echo "PERSONAS:NOT_MET"
+fi
+exit "$rc"

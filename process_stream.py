@@ -14,6 +14,7 @@ Exit codes: 0 ran, 2 nothing to read or no readable rows, 3 missing secret.
 from __future__ import annotations
 
 import argparse
+import csv
 import importlib.util
 import json
 import os
@@ -125,6 +126,23 @@ def fixture_files(directory: Path) -> list[Path]:
     return sorted(directory.glob("job_listings_*.csv"))
 
 
+CSV_COLUMNS = ["title", "company", "location", "salary", "lane", "url", "posted", "batch"]
+
+
+def write_rows(path: Path, rows: list[dict], batch: str) -> int:
+    """The matched postings as CSV: fast, offline, and readable without keys."""
+    path.parent.mkdir(parents=True, exist_ok=True)
+    with path.open("w", newline="", encoding="utf-8") as handle:
+        writer = csv.DictWriter(handle, fieldnames=CSV_COLUMNS, extrasaction="ignore")
+        writer.writeheader()
+        for row in rows:
+            writer.writerow({"title": row.get("Title", ""), "company": row.get("Company", ""),
+                             "location": row.get("Location", ""), "salary": row.get("Salary", ""),
+                             "lane": row.get("lane", ""), "url": row.get("Scraped URL", ""),
+                             "posted": row.get("Time Posted", ""), "batch": batch})
+    return len(rows)
+
+
 def copy_to_drop(files: list[Path]) -> list[Path]:
     if not files:
         return []
@@ -145,6 +163,7 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--fixtures", type=Path, help="directory of job_listings_*.csv to ingest")
     parser.add_argument("--dry-run", action="store_true", help="notify prints; no ledger write")
     parser.add_argument("--filters", type=Path, default=None, help="filters document (default: JOBKIT_FILTERS)")
+    parser.add_argument("--csv", type=Path, default=None, help="also write the matched rows to this CSV (no keys needed)")
     args = parser.parse_args(argv)
 
     filters = args.filters or paths.filters_path()
@@ -185,6 +204,19 @@ def main(argv: list[str] | None = None) -> int:
     except config.MissingSecret as error:
         print(str(error), file=sys.stderr)
         return 3
+
+    if args.csv:
+        rows = []
+        for path in files:
+            frame = pd.read_csv(path)
+            excluded = [x for x in title_exclude if x]
+            if excluded and "Title" in frame.columns:
+                pattern = "|".join(re.escape(x) for x in excluded)
+                frame = frame[~frame["Title"].str.contains(pattern, case=False, na=False)]
+            matching = match_lanes(frame, lanes)
+            rows.extend(matching.to_dict("records"))
+        count = write_rows(args.csv, rows, str(args.fixtures or args.once or "data/drop"))
+        print(f"csv={args.csv} rows={count}")
 
     matched = sum(item["matched"] for item in summaries)
     notified = sum(item["notified"] for item in summaries)

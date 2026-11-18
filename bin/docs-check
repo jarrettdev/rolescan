@@ -94,6 +94,9 @@ def main(argv: list[str]) -> int:
         problems.append("README.md lost the NLC link")
     if "Get it running end to end" not in readme:
         problems.append("README.md lost the starter prompt")
+    personas = sorted((ROOT / "filters" / "personas").glob("*.json"))
+    if len(personas) < 4 or not (ROOT / "bin" / "personas").exists():
+        problems.append("filters/personas lost its test users or bin/personas is missing")
     third = (ROOT / "docs" / "third-party.md").read_text()
     if "HC_SOLVE_CAPTCHA" not in third:
         problems.append("docs/third-party.md lost the captcha-opt-in line")
