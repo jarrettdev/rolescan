@@ -1,0 +1,28 @@
+{
+  "version": "1",
+  "type": "object",
+  "required": [
+    "notify",
+    "repeats",
+    "unkeyed"
+  ],
+  "properties": {
+    "notify": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      },
+      "description": "rows for new postings, batch order, with processed_at and Timestamp Posted added; already recorded in the ledger, not yet saved"
+    },
+    "repeats": {
+      "type": "integer",
+      "minimum": 0,
+      "description": "rows skipped because the ledger already held the posting"
+    },
+    "unkeyed": {
+      "type": "integer",
+      "minimum": 0,
+      "description": "rows notified that had no usable posting URL, identified by legacy's seven-field identity instead (counted, never dropped)"
+    }
+  }
+}

@@ -1,0 +1,6 @@
+{
+  "version": "1",
+  "type": "array",
+  "description": "selected rows in scrape order, first hit per objectID; keys title, company, location, salary, time_posted, yoe, description, tech_stack, requirements, company_linkedin (raw), company_homepage, apply_url, job_type, industry. hc_scraper.enrich replaces company_linkedin and drops company_homepage before values/scrape_csv.row_to_csv.",
+  "items": { "type": "object", "required": ["title", "company", "apply_url", "company_linkedin", "company_homepage"] }
+}

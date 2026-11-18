@@ -1,0 +1,91 @@
+{
+ "R-goal-no-noun-write": {
+  "cmd": [
+   "python3",
+   "{hub}/tools/fitness-no-noun-field-writes.py",
+   "."
+  ],
+  "plant": {
+   "file": "goals/ingest-listings/implementation.py",
+   "anchor": "    for idx, row in zip(df.index, df.to_dict(\"records\")):\n",
+   "insert_before": "    ledger._entries = {}\n"
+  }
+ },
+ "R-one-posting-one-dm": {
+  "cmd": [
+   "{py}",
+   "domain/ledger/tests/test_ledger.py"
+  ],
+  "plant": {
+   "file": "domain/ledger/ledger.py",
+   "anchor": "        if key in self._entries:\n            return False\n",
+   "replace": ""
+  }
+ },
+ "R-ledger-append-only": {
+  "cmd": [
+   "{py}",
+   "domain/ledger/tests/test_ledger.py"
+  ],
+  "plant": {
+   "file": "domain/ledger/ledger.py",
+   "anchor": "with open(self._path, \"a\", newline=\"\") as f:",
+   "replace": "with open(self._path, \"w\", newline=\"\") as f:"
+  }
+ },
+ "R-selection-pure": {
+  "cmd": [
+   "{py}",
+   "goals/select-listings/tests/test_select_listings.py"
+  ],
+  "plant": {
+   "file": "goals/select-listings/implementation.py",
+   "anchor": "import re\n",
+   "replace": "import re\nimport os\n"
+  }
+ },
+ "R-linkedin-cache-hits-only": {
+  "cmd": [
+   "{py}",
+   "domain/linkedin_cache/tests/test_linkedin_cache.py"
+  ],
+  "plant": {
+   "file": "domain/linkedin_cache/linkedin_cache.py",
+   "anchor": "        if not is_company_page(page):\n",
+   "replace": "        if False:\n"
+  }
+ },
+ "R-registry-verified-once": {
+  "cmd": [
+   "{py}",
+   "domain/ats_registry/tests/test_ats_registry.py"
+  ],
+  "plant": {
+   "file": "domain/ats_registry/ats_registry.py",
+   "anchor": "        if verified_status != 200:\n            raise ValueError(f\"unverified board {ats}:{tenant} (status {verified_status!r})\")\n",
+   "replace": ""
+  }
+ },
+ "R-ats-requests-anonymous": {
+  "cmd": [
+   "{py}",
+   "tests/test_ats_client.py"
+  ],
+  "plant": {
+   "file": "adapters/ats.py",
+   "anchor": "HEADERS = {\"User-Agent\": USER_AGENT, \"Accept\": \"application/json\", \"Accept-Encoding\": \"gzip\"}",
+   "replace": "HEADERS = {\"User-Agent\": USER_AGENT, \"Accept\": \"application/json\", \"Accept-Encoding\": \"gzip\", \"X-Contact\": \"planted\"}"
+  }
+ },
+ "R-poll-caps": {
+  "cmd": [
+   "{py}",
+   "goals/select-ats-postings/tests/test_select_ats_postings.py"
+  ],
+  "plant": {
+   "file": "goals/select-ats-postings/implementation.py",
+   "anchor": "    room = max(0, min(MAX_PER_RUN, MAX_PER_DAY - emitted_today))\n",
+   "replace": "    room = 10 ** 6\n"
+  }
+ }
+}

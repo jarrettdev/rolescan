@@ -1,0 +1,1 @@
+{"version": "1", "type": "object", "description": "Not found returns '' and stores nothing. A fetch that fails returns '' from the injected fetch. OSError from the cache file propagates; hc_scraper catches it and falls back to the homepage.", "properties": {}}

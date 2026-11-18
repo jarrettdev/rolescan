@@ -1,0 +1,13 @@
+{
+  "version": "1",
+  "type": "object",
+  "properties": {
+    "urls": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "posting URLs from processed_jobs.csv, the jobs_*.json archive and ats_candidates/*.txt"
+    }
+  }
+}

@@ -1,0 +1,27 @@
+{
+  "schema": "nlc-emit-manifest/v0",
+  "emit_id": "select-ats-postings-2026-10-24-2",
+  "action_id": "generate-select-ats-postings",
+  "artifact_path": "goals/select-ats-postings/implementation.py",
+  "bound_adr_ids": [
+    "0015"
+  ],
+  "audit": {
+    "status": "pending: execution audit",
+    "path": ".nlc-web/receipt-pollfields-audits.md"
+  },
+  "gate": {
+    "default": "closed",
+    "status": "pending: bin/check.sh"
+  },
+  "decision_trace": [
+    "Generated after goal-scaffold; markers by rule-emit",
+    "Fit read from filters/active.json through values/lanes (one evaluator, one effective config)",
+    "Two passes so detail requests go only to postings a board list already qualifies",
+    "Rows carry tech_stack from values/tech_terms and company_homepage from values/ats.employer_host; bin/ats-poll turns the homepage into company_linkedin (adrs/0015 amendment)"
+  ],
+  "thought_anchors": [
+    "freshness is the edge: only postings first published in the last 72 hours, newest first"
+  ],
+  "unused": "na"
+}

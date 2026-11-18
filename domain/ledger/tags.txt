@@ -1,0 +1,8 @@
+_path ledger-owned
+_lock ledger-owned
+_columns ledger-owned
+_entries ledger-owned
+_pending ledger-owned
+_history_duplicates ledger-owned
+_history_unkeyed ledger-owned
+_entries ledger-record

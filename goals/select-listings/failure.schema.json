@@ -1,0 +1,6 @@
+{
+  "version": "1",
+  "type": "object",
+  "description": "Never raises on malformed hits: missing or null nested objects read as empty. Hits that fail selection (duplicate objectID, non Greenhouse/Lever source, VIEW_CAP or more viewers, blocked company) are dropped, not errors.",
+  "properties": {}
+}

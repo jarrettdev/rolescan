@@ -1,0 +1,75 @@
+{
+ "goals": {
+  "ingest-listings": {
+   "rules": [
+    "R-goal-no-noun-write",
+    "R-one-posting-one-dm"
+   ],
+   "tags": [
+    "ledger-owned",
+    "ledger-record"
+   ]
+  },
+  "select-listings": {
+   "rules": [
+    "R-goal-no-noun-write",
+    "R-selection-pure"
+   ],
+   "tags": [
+    "scrape-selection"
+   ]
+  },
+  "find-linkedin": {
+   "rules": [
+    "R-goal-no-noun-write",
+    "R-linkedin-cache-hits-only"
+   ],
+   "tags": [
+    "linkedin-cache-owned",
+    "linkedin-cache"
+   ]
+  },
+  "build-ats-registry": {
+   "rules": [
+    "R-goal-no-noun-write"
+   ],
+   "tags": [
+    "ats-registry-candidates"
+   ]
+  },
+  "select-ats-postings": {
+   "rules": [
+    "R-goal-no-noun-write",
+    "R-poll-caps"
+   ],
+   "tags": [
+    "ats-poll-selection"
+   ]
+  },
+  "screen-postings": {
+   "rules": [
+    "R-goal-no-noun-write",
+    "R-req-once"
+   ],
+   "tags": [
+    "req-screen"
+   ]
+  },
+  "record-outcome": {
+   "rules": [
+    "R-goal-no-noun-write"
+   ],
+   "tags": [
+    "outcome-capture"
+   ]
+  },
+  "report-outcomes": {
+   "rules": [
+    "R-goal-no-noun-write"
+   ],
+   "tags": [
+    "outcome-report"
+   ]
+  }
+ }
+}

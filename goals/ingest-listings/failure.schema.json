@@ -1,0 +1,13 @@
+{
+  "version": "1",
+  "type": "object",
+  "description": "MissingColumn when the batch lacks Title, Time Posted or Scraped URL. A row without a usable URL is still notified (legacy identity) and counted in 'unkeyed'. A batch of known postings returns an empty notify, not an error.",
+  "properties": {
+    "error": {
+      "type": "string",
+      "enum": [
+        "MissingColumn"
+      ]
+    }
+  }
+}

@@ -1,0 +1,148 @@
+{
+ "note": "Copy to filters/active.json and edit. One entry per saved search; each entry is the shared base plus its named location preset plus its overrides. See filters/README.md.",
+ "base": {
+  "restrictJobsToTransparentSalaries": true,
+  "maxCompensationLowEnd": "400000",
+  "seniorityLevel": [
+   "No Prior Experience Required",
+   "Entry Level",
+   "Mid Level"
+  ],
+  "sortBy": "date",
+  "hideJobTypes": [
+   "Saved"
+  ],
+  "roleYoeRange": [
+   0,
+   5
+  ],
+  "doctorateDegreeRequirements": [
+   "Preferred",
+   "Not Mentioned"
+  ],
+  "roleTypes": [
+   "Individual Contributor"
+  ],
+  "minCompensationLowEnd": "0",
+  "workplaceTypes": [
+   "Remote",
+   "Hybrid",
+   "Onsite"
+  ],
+  "mastersDegreeRequirements": [
+   "Preferred",
+   "Not Mentioned"
+  ],
+  "dateFetchedPastNDays": 7
+ },
+ "locations": {
+  "US": [
+   {
+    "formatted_address": "United States",
+    "types": [
+     "country"
+    ],
+    "geometry": {
+     "location": {
+      "lat": "34.0544",
+      "lon": "-118.244"
+     }
+    },
+    "id": "user_country",
+    "address_components": [
+     {
+      "long_name": "United States",
+      "short_name": "US",
+      "types": [
+       "country"
+      ]
+     }
+    ],
+    "options": {
+     "flexible_regions": [
+      "anywhere_in_continent",
+      "anywhere_in_world"
+     ]
+    }
+   }
+  ],
+  "US_ALT": [
+   {
+    "formatted_address": "United States",
+    "types": [
+     "country"
+    ],
+    "geometry": {
+     "location": {
+      "lat": "37.751",
+      "lon": "-97.822"
+     }
+    },
+    "id": "user_country",
+    "address_components": [
+     {
+      "long_name": "United States",
+      "short_name": "US",
+      "types": [
+       "country"
+      ]
+     }
+    ],
+    "options": {
+     "flexible_regions": [
+      "anywhere_in_continent",
+      "anywhere_in_world"
+     ]
+    }
+   }
+  ]
+ },
+ "filters": [
+  {
+   "name": "Software Engineer",
+   "location": "US",
+   "overrides": {
+    "jobTitleQuery": "\"Software Engineer\" OR \"Software Developer\"",
+    "technologyKeywordsQuery": "Python OR JavaScript OR TypeScript OR Java OR Go",
+    "searchQuery": "\"Software Engineer\""
+   }
+  },
+  {
+   "name": "Backend Engineer",
+   "location": "US",
+   "overrides": {
+    "jobTitleQuery": "\"Backend Engineer\" OR \"Back End Engineer\"",
+    "technologyKeywordsQuery": "Python OR Go OR Java OR Node",
+    "searchQuery": "\"Backend Engineer\""
+   }
+  },
+  {
+   "name": "Data Engineer",
+   "location": "US",
+   "overrides": {
+    "jobTitleQuery": "\"Data Engineer\"",
+    "technologyKeywordsQuery": "SQL OR Python OR Spark OR Airflow",
+    "searchQuery": "\"Data Engineer\""
+   }
+  },
+  {
+   "name": "Cybersecurity Analyst",
+   "location": "US",
+   "overrides": {
+    "jobTitleQuery": "\"Security Analyst\" OR \"Cybersecurity Analyst\" OR \"SOC Analyst\"",
+    "technologyKeywordsQuery": "SIEM OR Splunk OR incident OR vulnerability",
+    "searchQuery": "\"Security Analyst\""
+   }
+  }
+ ],
+ "blocked_companies": [],
+ "title_exclude": [
+  "Senior",
+  "Staff",
+  "Manager",
+  "Lead",
+  "Principal",
+  "Sr",
+  "SR"
+ ]
+}

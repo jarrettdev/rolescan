@@ -1,0 +1,12 @@
+{
+  "schema": 1,
+  "verbs": {
+    "ingest-listings": [
+      "copy"
+    ],
+    "ledger": [
+      "read",
+      "write"
+    ]
+  }
+}

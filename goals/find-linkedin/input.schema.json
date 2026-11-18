@@ -1,0 +1,4 @@
+{"version": "1", "type": "object", "required": ["company", "homepage", "fetch", "cache"],
+ "properties": {"company": {"type": "string"}, "homepage": {"type": "string", "description": "company homepage URL, may be empty"},
+  "fetch": {"description": "callable(url, timeout) -> html; the network side, injected"},
+  "cache": {"type": "object", "description": "domain/linkedin_cache LinkedinCache; changed only through remember()"}}}

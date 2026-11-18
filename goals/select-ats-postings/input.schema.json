@@ -1,0 +1,29 @@
+{
+  "version": "1",
+  "type": "object",
+  "properties": {
+    "postings": {
+      "type": "array",
+      "description": "values/ats normalized postings (text filled for select)"
+    },
+    "lanes": {
+      "type": "array",
+      "description": "values/lanes.load()"
+    },
+    "known_keys": {
+      "type": "array",
+      "description": "posting keys in the ledger and already emitted"
+    },
+    "emitted_today": {
+      "type": "integer"
+    },
+    "now": {
+      "type": "string",
+      "description": "aware datetime"
+    },
+    "blocked": {
+      "type": "array",
+      "description": "select-listings BLOCKED_COMPANIES"
+    }
+  }
+}

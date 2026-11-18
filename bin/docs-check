@@ -1,0 +1,107 @@
+#!/usr/bin/env python3
+"""The agent surface as a gate (adrs/0021): task map, docs, schemas, third-party note.
+
+    bin/docs-check           check; exit 1 on a problem
+    bin/docs-check --write   regenerate docs/agent-guide.md from docs/tasks.json
+"""
+from __future__ import annotations
+
+import json
+import sys
+from pathlib import Path
+
+ROOT = Path(__file__).resolve().parents[1]
+TASKS = ROOT / "docs" / "tasks.json"
+GUIDE = ROOT / "docs" / "agent-guide.md"
+GATES = ("bin/check.sh", "bin/check-nlc.sh", "doctor.sh")
+AGENTS_RULES = (
+    "Never commit a credential",
+    "Do not post or DM without NOTIFY",
+    "Change the constraint before the code",
+    "Keep runtime state under data/",
+    "bin/check.sh",
+)
+
+
+def guide_text(tasks: list[dict]) -> str:
+    lines = [
+        "# Agent guide",
+        "",
+        "Generated from `docs/tasks.json` by `bin/docs-check --write`. Do not edit by hand.",
+        "",
+        "Read `AGENTS.md` first: its rules override anything here.",
+        "",
+        "| Task | Files | Gate | Fixture |",
+        "|---|---|---|---|",
+    ]
+    for task in tasks:
+        files = ", ".join(f"`{path}`" for path in task["files"])
+        lines.append(f"| **{task['id']}**: {task['task']} | {files} | `{task['gate']}` | `{task['fixture']}` |")
+    lines += [
+        "",
+        "## Loop",
+        "",
+        "1. Read the ADR or schema that governs the change (see `adrs/README.md`).",
+        "2. Edit the constraint, then the code it generates.",
+        "3. Run the task's gate, then `bin/check.sh`.",
+        "4. If the gate fails, fix the constraint, not the check.",
+        "",
+        "## Where things live",
+        "",
+        "- `process_stream.py` ingests one batch and notifies; `bin/run-once` wraps it.",
+        "- `adapters/` is the only place that talks to the outside world.",
+        "- `values/` holds pure rules (lanes, posting keys, CSV shape).",
+        "- `domain/` holds nouns with private state (`ledger`, `ats_registry`, `linkedin_cache`).",
+        "- `goals/` holds pure goal functions with input/output/failure schemas.",
+        "",
+    ]
+    return "\n".join(lines)
+
+
+def main(argv: list[str]) -> int:
+    write = "--write" in argv
+    problems: list[str] = []
+    tasks = json.loads(TASKS.read_text())["tasks"]
+    for task in tasks:
+        for path in task["files"]:
+            if not (ROOT / path).exists():
+                problems.append(f"{task['id']}: missing path {path}")
+        if task["gate"] not in GATES:
+            problems.append(f"{task['id']}: gate {task['gate']} is not one of {GATES}")
+        if not (ROOT / task["fixture"]).exists():
+            problems.append(f"{task['id']}: missing fixture {task['fixture']}")
+    for gate in GATES:
+        path = ROOT / gate
+        if not path.exists():
+            problems.append(f"gate {gate} is missing")
+        elif gate.startswith("bin/") and not path.stat().st_mode & 0o111:
+            problems.append(f"gate {gate} is not executable")
+    for schema in sorted((ROOT / "goals").glob("*/**/*.json")):
+        try:
+            json.loads(schema.read_text())
+        except ValueError as error:
+            problems.append(f"schema {schema.relative_to(ROOT)}: {error}")
+    agents = (ROOT / "AGENTS.md").read_text()
+    for rule in AGENTS_RULES:
+        if rule not in agents:
+            problems.append(f"AGENTS.md lost the rule: {rule!r}")
+    third = (ROOT / "docs" / "third-party.md").read_text()
+    if "HC_SOLVE_CAPTCHA" not in third:
+        problems.append("docs/third-party.md lost the captcha-opt-in line")
+    expected = guide_text(tasks)
+    if write:
+        GUIDE.write_text(expected)
+        print("docs-check: guide written")
+    elif not GUIDE.exists() or GUIDE.read_text() != expected:
+        problems.append("docs/agent-guide.md is out of date; run bin/docs-check --write")
+    if problems:
+        for problem in problems:
+            print(f"DOCS_CHECK:FAIL {problem}")
+        print("DOCS_CHECK:NOT_MET")
+        return 1
+    print("DOCS_CHECK:MET")
+    return 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main(sys.argv[1:]))

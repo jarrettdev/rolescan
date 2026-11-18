@@ -1,0 +1,32 @@
+{
+  "source": "fresh-context plan auditor subagent, 4 rounds, report transcribed into .nlc-web/receipt-edge-plan-audit.md",
+  "verdict": "PASS",
+  "rounds": 4,
+  "ssot_leaf_ids": [
+    "R1",
+    "R2",
+    "R3",
+    "R4",
+    "R5",
+    "R6",
+    "R7",
+    "R8",
+    "R9",
+    "R10",
+    "R11",
+    "R12",
+    "R13",
+    "R14",
+    "R15",
+    "R16",
+    "R17",
+    "R18"
+  ],
+  "quality_snapshot": {
+    "opportunities": 24,
+    "ops": 24,
+    "defects": 0,
+    "quality": 1.0
+  },
+  "plan": ".nlc-web/plan-edge.json"
+}

@@ -1,0 +1,52 @@
+{
+ "facts": [
+  {
+   "id": "KF-transport",
+   "scope": "scrape.transport",
+   "status": "confirmed",
+   "statement": "hc_scraper.py reads hiring.cafe's /api/search-jobs JSON from the page context after one browser navigation; each saved filter is one search config built from base + location preset + overrides.",
+   "source": "hc_scraper.py fetch_page; values/lanes.py effective_configs",
+   "checked": "2026-11-17"
+  },
+  {
+   "id": "KF-selection",
+   "scope": "scrape.selection",
+   "status": "confirmed",
+   "statement": "A hiring.cafe hit becomes a scrape row only when its source is Greenhouse or Lever and it has fewer than 100 viewers; blocked companies come from filters/active.json.",
+   "source": "goals/select-listings/implementation.py; adrs/0009",
+   "checked": "2026-11-17"
+  },
+  {
+   "id": "KF-ledger",
+   "scope": "state.ledger",
+   "status": "confirmed",
+   "statement": "processed_jobs.csv is append-only and keyed by posting identity, so the same posting is never notified twice; it lives under JOBKIT_DATA.",
+   "source": "domain/ledger/ledger.py; adrs/0001",
+   "checked": "2026-11-17"
+  },
+  {
+   "id": "KF-notify",
+   "scope": "notify",
+   "status": "confirmed",
+   "statement": "One synchronous notifier covers print, webhook and Discord. NOTIFY=print needs no secret; DISCORD_BOT_TOKEN plus DISCORD_CHANNEL_ID are required for Discord, and a DM additionally needs ENABLE_DM=1 and DM_USER_ID.",
+   "source": "adapters/config.py; adapters/notify.py; adrs/0018",
+   "checked": "2026-11-17"
+  },
+  {
+   "id": "KF-ats",
+   "scope": "ats.poller",
+   "status": "confirmed",
+   "statement": "bin/ats-poll reads the board registry and asks public Greenhouse, Lever, Ashby, Workable, SmartRecruiters and Workday endpoints; a board enters the registry only after its API answered 200.",
+   "source": "adapters/ats.py; domain/ats_registry; adrs/0015",
+   "checked": "2026-11-17"
+  },
+  {
+   "id": "KF-nlc",
+   "scope": "nlc",
+   "status": "confirmed",
+   "statement": "This package pins NLC 0.8.0 and gates on rule coverage, the rule IR snapshot and the call tree; the private repo's C1-C26 release audit is not shipped.",
+   "source": ".nlc/lock.json; adrs/0021",
+   "checked": "2026-11-17"
+  }
+ ]
+}

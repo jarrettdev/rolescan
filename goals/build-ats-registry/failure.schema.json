@@ -1,0 +1,6 @@
+{
+  "version": "1",
+  "type": "object",
+  "description": "Never raises: a URL that is not an ATS posting, or is malformed, is counted in ignored.",
+  "properties": {}
+}

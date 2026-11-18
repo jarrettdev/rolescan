@@ -1,0 +1,26 @@
+{
+  "schema": "nlc-emit-manifest/v0",
+  "emit_id": "find-linkedin-2026-10-06-1",
+  "action_id": "brownfield-port-find-linkedin",
+  "artifact_path": "goals/find-linkedin/implementation.py",
+  "bound_adr_ids": [
+    "0008"
+  ],
+  "audit": {
+    "status": "done: plan audit FAIL then fixed; execution audit FAIL (marker disclosure) then fixed",
+    "path": ".nlc-web/receipt-adopt1-audits.md"
+  },
+  "gate": {
+    "default": "closed",
+    "status": "MET: bin/check.sh 2026-10-06"
+  },
+  "decision_trace": [
+    "Body ported from linkedin_lookup.find_linkedin (disclosed), written after goal-scaffold, markers by rule-emit",
+    "Cache changes only through LinkedinCache.remember(); network injected as fetch",
+    "Parity: same answers, fetches and cache file as the frozen module on 8 stubbed cases"
+  ],
+  "thought_anchors": [
+    "a miss may be a rate-limited search engine, so only hits are kept"
+  ],
+  "unused": "na"
+}

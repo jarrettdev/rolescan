@@ -1,0 +1,10 @@
+{
+  "version": "1",
+  "type": "object",
+  "required": ["batch", "file_datetime", "ledger"],
+  "properties": {
+    "batch": { "type": "array", "items": { "type": "object", "required": ["Title", "Time Posted", "Scraped URL"] }, "description": "rows of one scrape CSV (pandas DataFrame)" },
+    "file_datetime": { "type": "string", "format": "date-time", "description": "scrape time, from the job_listings_<ms>.csv filename" },
+    "ledger": { "type": "object", "description": "domain/ledger Ledger; mutated only through record()" }
+  }
+}

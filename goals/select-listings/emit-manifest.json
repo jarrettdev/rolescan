@@ -1,0 +1,18 @@
+{
+  "schema": "nlc-emit-manifest/v0",
+  "emit_id": "select-listings-2026-10-04-1",
+  "action_id": "brownfield-port-select-listings",
+  "artifact_path": "goals/select-listings/implementation.py",
+  "bound_adr_ids": ["0004"],
+  "audit": { "status": "pending", "path": ".nlc-web/receipt-exec-audit.md" },
+  "gate": { "default": "closed", "status": "pending: bin/check.sh" },
+  "decision_trace": [
+    "Body ported from hc_scraper.process_jobs (disclosed), not generated from a fresh spec; equivalence checked against HEAD's process_jobs on the fixture",
+    "Pure: LinkedIn enrichment (network) moved out to hc_scraper.enrich, same rows same order",
+    "VIEW_CAP = 100 is current behaviour; the old '<50' log text was the stale copy"
+  ],
+  "thought_anchors": [
+    "selection is a pure function of the scraped hits; I/O stays in the scraper shell"
+  ],
+  "unused": "na"
+}

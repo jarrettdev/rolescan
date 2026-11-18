@@ -1,0 +1,19 @@
+{
+  "schema": "nlc-emit-manifest/v0",
+  "emit_id": "ingest-listings-2026-09-28-1",
+  "action_id": "brownfield-port-ingest-listings",
+  "artifact_path": "goals/ingest-listings/implementation.py",
+  "bound_adr_ids": ["0001"],
+  "audit": { "status": "pending", "path": "integrity/audits/ingest-listings-2026-09-28.md" },
+  "gate": { "default": "closed", "status": "pending: bin/check.sh" },
+  "decision_trace": [
+    "Body ported from process_stream.process_file (disclosed), not generated from a fresh spec",
+    "Identity via Ledger posting_key; records only through Ledger.record(); writes no Ledger state (ADR 0001)",
+    "Parity exit criterion: goal notifications are a subset of legacy's on real scrape history, and every dropped one is a repeat posting or an unkeyed row"
+  ],
+  "thought_anchors": [
+    "a scraped batch is an immutable value, not a noun; only the ledger carries state worth protecting",
+    "NLC gate 1 misses subscript writes; the noun exposes read-only views instead"
+  ],
+  "unused": "na"
+}

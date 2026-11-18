@@ -1,0 +1,26 @@
+{
+  "schema": "nlc-emit-manifest/v0",
+  "emit_id": "build-ats-registry-2026-10-24-1",
+  "action_id": "generate-build-ats-registry",
+  "artifact_path": "goals/build-ats-registry/implementation.py",
+  "bound_adr_ids": [
+    "0015"
+  ],
+  "audit": {
+    "status": "pending: execution audit",
+    "path": ".nlc-web/receipt-edge-exec-audit.md"
+  },
+  "gate": {
+    "default": "closed",
+    "status": "pending: bin/check.sh"
+  },
+  "decision_trace": [
+    "Generated after goal-scaffold; marker by rule-emit",
+    "Pure: verification needs the network, so bin/ats-registry does it through adapters/ats.py and writes only through AtsRegistry verbs",
+    "Board identity comes from values/ats.ats_ref, the one parse"
+  ],
+  "thought_anchors": [
+    "a custom Greenhouse domain names no board, so it is a host candidate resolved later by the embed redirect"
+  ],
+  "unused": "na"
+}

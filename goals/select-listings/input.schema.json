@@ -1,0 +1,8 @@
+{
+  "version": "1",
+  "type": "object",
+  "required": ["raw_jobs"],
+  "properties": {
+    "raw_jobs": { "type": "array", "items": { "type": "object" }, "description": "hiring.cafe /api/search-jobs hits across all search filters, in scrape order" }
+  }
+}

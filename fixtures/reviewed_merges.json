@@ -1,0 +1,13 @@
+{
+  "about": "Suppressed repeats whose title or company differ from the row that was DM'd. Each one had to be reviewed before the parity gate would pass (integrity/parity/replay.py spec 2). A new unreviewed merge fails bin/check.sh.",
+  "reviewed_by": "claude agent on 2026-09-28; confirmed by the owner 2026-10-04, recorded by Claude on the owner's explicit instruction (\"override (i sign off from here, i promise)\"), HumanSignal trade-off included",
+  "merges": [
+    {"key": "gh:8405109002", "verdict": "same posting", "reason": "B Lab retitled 'Data Analyst (Sao Paulo)' to 'Insights Analyst (Sao Paulo)'; same company, location and requisition"},
+    {"key": "gh:8405091002", "verdict": "same posting", "reason": "B Lab retitled 'Data Analyst (New York)' to 'Insights Analyst (New York)'; same company, location and requisition"},
+    {"key": "gh:7634529003", "verdict": "same posting", "reason": "Rocket Lab appended ' - TS Clearance' to the same requisition's title"},
+    {"key": "gh:5803419004", "verdict": "same posting", "reason": "identical title; company named 'PlayStation Global' vs 'Sony Interactive Entertainment' (same company)"},
+    {"key": "gh:5803416004", "verdict": "same posting", "reason": "identical title; company named 'PlayStation Global' vs 'Sony Interactive Entertainment' (same company)"},
+    {"key": "gh:7785676", "verdict": "same posting", "reason": "identical title; company named 'Keystone - Referrals' vs 'Keystone Strategy' (same company)"},
+    {"key": "gh:5800364004", "verdict": "trade-off accepted", "reason": "HumanSignal reused one requisition id for the Spring/Summer 2025 and 2026 internship cycles. By ADR 0001 the same ATS id is the same posting, so the 2026 cycle is not re-DM'd. Arguably a new opportunity; accepted because it is the only case in 9 months of history and is an internship outside the target band. Revisit if requisition reuse shows up for target roles."}
+  ]
+}

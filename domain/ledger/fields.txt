@@ -1,0 +1,7 @@
+_path
+_lock
+_columns
+_entries
+_pending
+_history_duplicates
+_history_unkeyed

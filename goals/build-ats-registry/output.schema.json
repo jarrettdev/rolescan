@@ -1,0 +1,5 @@
+{
+  "version": "1",
+  "type": "object",
+  "description": "{boards: {(ats, tenant): {ats, tenant, sample_url, site?, host?}}, gh_hosts: {host: [up to 3 sample URLs]}, ignored: int}"
+}

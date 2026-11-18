@@ -1,0 +1,11 @@
+# User state and secrets: never commit these.
+.env
+data/
+dist/
+.doctor-cache/
+venv/
+.venv/
+__pycache__/
+*.pyc
+filters/active.json
+*.log

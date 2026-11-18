@@ -1,0 +1,5 @@
+{
+  "version": "1",
+  "type": "object",
+  "description": "prefilter: postings newest first; select_ats_postings: [(scrape row, posting, lane name)] at most min(MAX_PER_RUN, MAX_PER_DAY - emitted_today)"
+}

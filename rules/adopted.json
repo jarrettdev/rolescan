@@ -1,0 +1,118 @@
+{
+ "adoptions": [
+  {
+   "rule_id": "R-goal-no-noun-write",
+   "adr_id": "0001",
+   "precedence_tier": "project",
+   "precedence_rank": 5,
+   "match": {
+    "tags_any": [
+     "ledger-owned",
+     "resume-log-owned",
+     "linkedin-cache-owned"
+    ],
+    "primitive": "write"
+   },
+   "effect": "forbid",
+   "obligation": "goals never assign Ledger, ResumeLog or LinkedinCache fields; only their verbs change them"
+  },
+  {
+   "rule_id": "R-one-posting-one-dm",
+   "adr_id": "0001",
+   "precedence_tier": "project",
+   "precedence_rank": 10,
+   "match": {
+    "tags_any": [
+     "ledger-record"
+    ],
+    "primitive": "write"
+   },
+   "effect": "must",
+   "obligation": "a posting key is recorded once; Ledger.record refuses a key it already holds, so a posting is notified once"
+  },
+  {
+   "rule_id": "R-ledger-append-only",
+   "adr_id": "0001",
+   "precedence_tier": "project",
+   "precedence_rank": 20,
+   "match": {
+    "tags_any": [
+     "ledger-owned"
+    ],
+    "primitive": "write"
+   },
+   "effect": "must",
+   "obligation": "existing ledger rows are never rewritten or removed; save() only appends rows recorded since load"
+  },
+  {
+   "rule_id": "R-selection-pure",
+   "adr_id": "0004",
+   "precedence_tier": "project",
+   "precedence_rank": 40,
+   "match": {
+    "tags_any": [
+     "scrape-selection"
+    ],
+    "primitive": "return"
+   },
+   "effect": "must",
+   "obligation": "scrape selection is pure: select_listings imports nothing that does I/O; enrichment happens after it"
+  },
+  {
+   "rule_id": "R-linkedin-cache-hits-only",
+   "adr_id": "0008",
+   "precedence_tier": "project",
+   "precedence_rank": 80,
+   "match": {
+    "tags_any": [
+     "linkedin-cache"
+    ],
+    "primitive": "write"
+   },
+   "effect": "must",
+   "obligation": "linkedin_cache.json holds only hits: lowercased company keys mapped to linkedin.com/company/<slug>; a miss is never cached"
+  },
+  {
+   "rule_id": "R-registry-verified-once",
+   "adr_id": "0015",
+   "precedence_tier": "project",
+   "precedence_rank": 130,
+   "match": {
+    "tags_any": [
+     "ats-registry-owned"
+    ],
+    "primitive": "write"
+   },
+   "effect": "must",
+   "obligation": "a board enters the registry only after its public API answered 200, once per (ats, tenant); a posting is marked emitted at most once"
+  },
+  {
+   "rule_id": "R-ats-requests-anonymous",
+   "adr_id": "0015",
+   "precedence_tier": "project",
+   "precedence_rank": 140,
+   "match": {
+    "tags_any": [
+     "ats-egress"
+    ],
+    "primitive": "transmit"
+   },
+   "effect": "must",
+   "obligation": "every request to an ATS API carries exactly the fixed project headers: no name, email, handle or contact"
+  },
+  {
+   "rule_id": "R-poll-caps",
+   "adr_id": "0015",
+   "precedence_tier": "project",
+   "precedence_rank": 150,
+   "match": {
+    "tags_any": [
+     "ats-poll-selection"
+    ],
+    "primitive": "transmit"
+   },
+   "effect": "must",
+   "obligation": "the ATS poller hands on at most 8 postings per run and 40 per UTC day, only lane-matched, US, fresh postings whose key is not in the ledger or already emitted"
+  }
+ ]
+}

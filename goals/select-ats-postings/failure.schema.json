@@ -1,0 +1,6 @@
+{
+  "version": "1",
+  "type": "object",
+  "description": "Never raises on a malformed posting: it is skipped. A posting with no first_published, no posting key or no US location is never selected.",
+  "properties": {}
+}

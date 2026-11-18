@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+# Ingest one batch and notify. Examples:
+#   bin/run-once --fixtures fixtures/run1 --dry-run
+#   bin/run-once --once data/drop/job_listings_1767000000000.csv
+set -euo pipefail
+HERE="$(cd "$(dirname "$0")/.." && pwd)"
+PY="$HERE/venv/bin/python"
+[ -x "$PY" ] || PY=python3
+exec "$PY" "$HERE/process_stream.py" "$@"
