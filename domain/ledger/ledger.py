@@ -18,7 +18,10 @@ import pandas as pd
 sys.path.insert(0, str(Path(__file__).resolve().parents[2] / "values"))
 from posting_key import UnkeyedListing, listing_key, posting_key  # noqa: E402,F401  (re-exported)
 
-HOME = Path(os.environ.get("JOBKIT_DATA") or Path(__file__).resolve().parents[2] / "data") / "processed_jobs.csv"
+def _default_home() -> Path:
+    """Resolved at use time so JOBKIT_DATA changed after import still wins."""
+    from adapters import paths
+    return paths.data_path("processed_jobs.csv")
 URL_COLUMN = "Scraped URL"
 
 
@@ -34,11 +37,11 @@ class Ledger:
     writes, and does not scan the repo root); object.__setattr__ is still
     possible in Python and is out of scope."""
 
-    def __init__(self, path: Path = HOME, exclusive: bool = False) -> None:
+    def __init__(self, path: Path | None = None, exclusive: bool = False) -> None:
         """exclusive=True takes the file lock before loading and holds it
         until __exit__: use `with Ledger(path, exclusive=True) as ledger:` so
         load -> record -> save is one decision no other writer can split."""
-        self._set("_path", Path(path))
+        self._set("_path", Path(path) if path else _default_home())
         self._set("_lock", None)
         if exclusive:
             lock = open(f"{self._path}.lock", "a")

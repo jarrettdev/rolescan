@@ -21,12 +21,14 @@ sys.path.insert(0, str(ROOT / "values"))
 from write import _load, _replace  # noqa: E402  (interior primitives)
 from linkedin import cache_key, is_company_page  # noqa: E402
 
-HOME = Path(os.environ.get("JOBKIT_DATA") or ROOT / "data") / "linkedin_cache.json"
+def _default_home() -> Path:
+    from adapters import paths
+    return paths.data_path("linkedin_cache.json")
 
 
 class LinkedinCache:
-    def __init__(self, path: Path = HOME) -> None:
-        self._set("_path", Path(path))
+    def __init__(self, path: Path | None = None) -> None:
+        self._set("_path", Path(path) if path else _default_home())
         raw = _load(self._path)
         try:
             data = json.loads(raw) if raw else {}

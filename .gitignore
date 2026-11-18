@@ -10,3 +10,4 @@ __pycache__/
 filters/active.json
 *.log
 .cache/
+.nlc-web/

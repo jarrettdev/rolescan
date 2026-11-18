@@ -250,16 +250,21 @@ def browser_tmpdir(base=None, stale_after=BROWSER_TMP_STALE_S, now=None):
         except OSError:
             pass
     path = tempfile.mkdtemp(prefix=BROWSER_TMP_PREFIX, dir=base)
-    old = os.environ.get("TMPDIR")
-    os.environ["TMPDIR"] = path
+    # Chrome reads TMPDIR on POSIX and TEMP/TMP on Windows; set all three so the
+    # per-run folder guarantee (adrs/0012) holds on every platform.
+    temp_names = ("TMPDIR", "TEMP", "TMP")
+    previous = {name: os.environ.get(name) for name in temp_names}
+    for name in temp_names:
+        os.environ[name] = path
     tempfile.tempdir = None
     try:
         yield path
     finally:
-        if old is None:
-            os.environ.pop("TMPDIR", None)
-        else:
-            os.environ["TMPDIR"] = old
+        for name, value in previous.items():
+            if value is None:
+                os.environ.pop(name, None)
+            else:
+                os.environ[name] = value
         tempfile.tempdir = None
         shutil.rmtree(path, ignore_errors=True)
 

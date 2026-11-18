@@ -26,14 +26,16 @@ sys.path.insert(0, str(ROOT / "values"))
 from write import _load, _write  # noqa: E402  (interior primitives)
 from ats import ATSES  # noqa: E402
 
-HOME = Path(os.environ.get("JOBKIT_DATA") or ROOT / "data") / "ats_registry.jsonl"
+def _default_home() -> Path:
+    from adapters import paths
+    return paths.data_path("ats_registry.jsonl")
 
 
 class AtsRegistry:
     """State changes only through add_board(), add_host() and mark_emitted()."""
 
-    def __init__(self, path: Path = HOME) -> None:
-        self._set("_path", Path(path))
+    def __init__(self, path: Path | None = None) -> None:
+        self._set("_path", Path(path) if path else _default_home())
         self._set("_mutex", threading.Lock())
         boards, hosts, emitted = {}, {}, {}
         raw = _load(self._path)
