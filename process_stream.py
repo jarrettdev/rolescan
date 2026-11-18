@@ -215,7 +215,8 @@ def main(argv: list[str] | None = None) -> int:
                 frame = frame[~frame["Title"].str.contains(pattern, case=False, na=False)]
             matching = match_lanes(frame, lanes)
             rows.extend(matching.to_dict("records"))
-        count = write_rows(args.csv, rows, str(args.fixtures or args.once or "data/drop"))
+        batch = Path(args.fixtures or args.once or "data/drop").name or "batch"
+        count = write_rows(args.csv, rows, batch)
         print(f"csv={args.csv} rows={count}")
 
     matched = sum(item["matched"] for item in summaries)

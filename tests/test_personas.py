@@ -29,6 +29,8 @@ def test_personas_run_without_keys_and_write_csv():
             lines = path.read_text().strip().splitlines()
             assert len(lines) >= 2, f"{persona}: csv has no rows ({len(lines)} lines)"
             assert lines[0].startswith("title,company,location,salary,lane,url"), lines[0]
+            assert ",run1" in lines[1] or lines[1].endswith(",run1"), lines[1]
+            assert "/tmp/" not in path.read_text() and "/home/" not in path.read_text(), "csv leaked a local path"
         intern = (results / "intern.csv").read_text()
         assert "Delta Works" in intern, intern
         newgrad = (results / "new-grad.csv").read_text()
