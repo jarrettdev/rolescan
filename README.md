@@ -5,6 +5,44 @@ already seen, and tells you when something matches the searches you set. It
 does not apply for you, does not write resumes, and sends nothing anywhere
 except the alerts you choose.
 
+Built with [Natural Language Coding](https://github.com/Zygotic-AI/Natural-Language-Compiler)
+(NLC 0.8.0): the rules, filters and gates are written down, so a model can read
+them and stay inside them. See `AGENTS.md`.
+
+## Start here: one prompt
+
+Paste this into Claude Code, Codex, Cursor, or any assistant that can read the
+repo. It runs the setup, shows you the output, then asks you the four things it
+needs to customise the filters. Nothing is sent anywhere until you say so.
+
+```text
+I just cloned this repo (rolescan). Get it running end to end, then set it up for me.
+
+1. Read AGENTS.md, CLAUDE.md (or llms.txt if you have no file access), README.md
+   and docs/agent-guide.md first. Follow their rules: no secrets in git, no posting
+   or DMing without asking me, change filters rather than code.
+2. Run ./setup.sh, ./doctor.sh and bin/run-once --fixtures fixtures/run1 --dry-run.
+   Show me what each printed and stop if anything is not CORE_READY.
+3. Ask me these four things, then edit filters/active.json and nothing else:
+   - role titles or keywords to watch for
+   - locations (cities, states, or "remote US")
+   - minimum base pay
+   - maximum years of experience
+   Also ask whether internships and new-grad roles should be included, and which
+   titles or companies to exclude.
+4. Re-run ./doctor.sh and bin/run-once --fixtures fixtures/run1 --dry-run and show
+   me which sample roles now match, and which of my requested roles would not match
+   the sample batch yet (and why).
+5. Run bin/ats-registry seed, then bin/ats-registry show, and tell me how to add a
+   company board I care about.
+6. Ask me where alerts should go: terminal, webhook, or Discord. Only after I answer,
+   update .env, confirm with ./doctor.sh --json, and stop before sending a test message.
+7. Print the two lines I should put in cron. Do not add a scheduler yourself.
+```
+
+If you are on chatgpt.com with no file access, paste `llms.txt` and the output of
+`./doctor.sh --json` instead; it can interpret errors but cannot run commands.
+
 ## What you need
 
 - Python 3.12+ and a terminal. Nothing else for the default path.
@@ -100,9 +138,10 @@ Prompts that work, verbatim:
 - **First setup**: "Read AGENTS.md and README.md, then run `./setup.sh`,
   `./doctor.sh`, and `bin/run-once --fixtures fixtures/run1 --dry-run`. Show me
   the output and tell me if anything is missing."
-- **Your searches**: "Using `filters/example.json` and `filters/schema.json`, add
+- **Your searches**: "Using `filters/active.json` and `filters/schema.json`, add
   a lane for new-grad and internship software roles in the US. Run `./doctor.sh`
-  and the fixture run, and show me which sample roles now match."
+  and the fixture run, and show me which sample roles now match. Leave
+  `filters/example.json` alone: it is the contract the gate pins."
 - **Alerts**: "Switch `NOTIFY` to discord. Ask me for the bot token and channel
   id, write them to `.env`, and confirm with `./doctor.sh --json`. Do not send a
   test message without asking me."
@@ -121,7 +160,8 @@ Prompts that work, verbatim:
 |---|---|
 | `MISSING_SECRET: X` | that key is absent or blank in `.env`; `./doctor.sh` names it |
 | `CORE_NOT_READY` | run `./setup.sh`; doctor lists what is missing |
-| `matched=0` | filters too narrow, or postings older than the 72 h freshness window; loosen pay/years or widen `dateFetchedPastNDays` |
+| `matched=0` | filters too narrow for the batch you ran. Company-board postings must be newer than 72 h, and your lane's title/tech queries must both hit; pay, years and `dateFetchedPastNDays` only steer the hiring.cafe search |
+| `NOTHING_TO_DO` (exit 2) | nothing is waiting in `data/drop`; run `bin/ats-poll` or the scraper first |
 | Discord `403` | bad token, wrong channel, or the bot cannot post there |
 | browser `WARN` | run `./setup.sh --browser` and install Chrome, or ignore it and use the boards |
 
@@ -137,8 +177,10 @@ Prompts that work, verbatim:
 | `data/` | ledger, registry, drop folder, caches (gitignored) |
 
 Gates: `bin/check.sh` (offline: compile, secrets, doctor, tests, fixture run,
-clean tree) and `bin/check-nlc.sh` (rules, rule IR, call tree; NLC 0.8.0).
-`AGENTS.md` has the rules a contributor or an agent must follow.
+clean tree) and `bin/check-nlc.sh` (rules, rule IR, call tree). The second needs
+the NLC hub 0.8.0: `curl -fsSL https://raw.githubusercontent.com/Zygotic-AI/Natural-Language-Compiler/main/scripts/install.sh | NLC_VERSION=0.8.0 bash`.
+`AGENTS.md` has the rules a contributor or an agent must follow. `setup.sh`
+takes no prompts; `--no-input` exists for scripts.
 
 ## Provenance and licence
 

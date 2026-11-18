@@ -165,6 +165,14 @@ def test_list_board_greenhouse_shapes_postings():
     assert A.list_board(client(), {"ats": "greenhouse", "tenant": "missing"}) is None
 
 
+
+
+def test_cache_lives_under_the_data_root():
+    from pathlib import Path
+    import adapters.ats as A
+    parts = Path(A.CACHE_DIR).parts
+    assert "data" in parts, f"cache is not under data: {A.CACHE_DIR}"
+
 if __name__ == "__main__":
     tests = [v for k, v in sorted(globals().items()) if k.startswith("test_")]
     for t in tests:

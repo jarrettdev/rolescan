@@ -34,7 +34,7 @@ FLOOR_S = 0.5
 HOST_5XX_LIMIT = 3  # 5xx answers from one host in a run before it is left alone
 TIMEOUT_S = 15
 BUDGET_S = 720
-CACHE_DIR = ROOT / ".cache" / "ats"
+CACHE_DIR = Path(os.environ.get("JOBKIT_DATA") or ROOT / "data") / ".cache" / "ats"
 
 Response = namedtuple("Response", "status body etag from_cache location", defaults=(None, None, False, None))
 

@@ -37,7 +37,7 @@ def test_baseline_matches_the_three_lane_rows():
     with tempfile.TemporaryDirectory() as tmp:
         result = run(data_root=Path(tmp) / "data", filters=EXAMPLE)
     assert result.returncode == 0, result.stderr
-    assert "matched=4" in result.stdout and "notified=3" in result.stdout, result.stdout
+    assert "matched=3" in result.stdout and "notified=3" in result.stdout, result.stdout
     assert "Acme Systems" in result.stdout and "Zeta Corp" not in result.stdout
     assert "Delta Works" not in result.stdout and "Epsilon Analytics" not in result.stdout
 
@@ -74,6 +74,24 @@ def test_non_dry_run_records_into_the_data_root():
         assert second.returncode == 0
         assert "notified=0" in second.stdout and "repeats=3" in second.stdout, second.stdout
 
+
+
+
+def test_title_exclude_is_honoured():
+    with tempfile.TemporaryDirectory() as tmp:
+        doc = json.loads(EXAMPLE.read_text())
+        doc["filters"].append({"name": "New grad and internships", "location": "US", "overrides": {
+            "jobTitleQuery": 'Intern OR Internship OR "New Grad" OR Graduate',
+            "technologyKeywordsQuery": "Python OR SQL",
+            "searchQuery": ""}})
+        doc["title_exclude"] = ["Intern"]
+        path = Path(tmp) / "filters.json"
+        path.write_text(json.dumps(doc))
+        result = run(data_root=Path(tmp) / "data", filters=path)
+    assert result.returncode == 0, result.stderr
+    assert "matched=5" in result.stdout, result.stdout
+    assert "Delta Works" not in result.stdout, "an excluded title still matched"
+    assert "Epsilon Analytics" in result.stdout, "excluding one title dropped another"
 
 if __name__ == "__main__":
     tests = [v for k, v in sorted(globals().items()) if k.startswith("test_")]

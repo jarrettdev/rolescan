@@ -15,6 +15,7 @@ from __future__ import annotations
 
 import argparse
 import importlib.util
+import json
 import os
 import re
 import shutil
@@ -69,21 +70,26 @@ def match_lanes(frame: pd.DataFrame, lanes: list) -> pd.DataFrame:
     return indexed
 
 
-def run_batch(path: Path, *, lanes: list, dry_run: bool) -> dict:
+def run_batch(path: Path, *, lanes: list, dry_run: bool, title_exclude: list | None = None) -> dict:
     frame = pd.read_csv(path)
     stamped = batch_time(path)
+    excluded = [x for x in (title_exclude or []) if x]
+    if excluded and "Title" in frame.columns:
+        pattern = "|".join(re.escape(x) for x in excluded)
+        frame = frame[~frame["Title"].str.contains(pattern, case=False, na=False)]
     matching = match_lanes(frame, lanes)
     summary = {"file": str(path), "rows": len(frame), "matched": len(matching),
                "repeats": 0, "unkeyed": 0, "notified": 0, "lane": ""}
     if matching.empty:
         return summary
     ledger_path = paths.data_path("processed_jobs.csv")
+    pattern = "|".join(re.escape(x) for x in (title_exclude or []) if x) or None
     if dry_run:
         ledger = Ledger(ledger_path)
-        result = INGEST.ingest_listings(matching, stamped, ledger)
+        result = INGEST.ingest_listings(matching, stamped, ledger, title_exclude=pattern)
     else:
         with Ledger(ledger_path, exclusive=True) as ledger:
-            result = INGEST.ingest_listings(matching, stamped, ledger)
+            result = INGEST.ingest_listings(matching, stamped, ledger, title_exclude=pattern)
             ledger.save()
     summary["repeats"] = result.repeats
     summary["unkeyed"] = result.unkeyed
@@ -134,10 +140,16 @@ def main(argv: list[str] | None = None) -> int:
         print(f"FILTERS_MISSING: {filters}", file=sys.stderr)
         return 2
     try:
+        doc = json.loads(filters.read_text())
+        unknown = [f.get("location") for f in doc.get("filters", []) if f.get("location") not in doc.get("locations", {})]
+        if unknown:
+            print(f"FILTERS_INVALID: {filters}: /filters location {unknown[0]!r} is not a key in /locations", file=sys.stderr)
+            return 2
         lanes = L.load(filters)
-    except (KeyError, ValueError, TypeError) as error:
+    except (KeyError, ValueError, TypeError, OSError) as error:
         print(f"FILTERS_INVALID: {filters}: {error}", file=sys.stderr)
         return 2
+    title_exclude = [str(x) for x in doc.get("title_exclude") or [] if str(x).strip()]
 
     if args.fixtures:
         files = copy_to_drop(fixture_files(args.fixtures)) if not args.dry_run else fixture_files(args.fixtures)
@@ -157,7 +169,7 @@ def main(argv: list[str] | None = None) -> int:
             return 2
 
     try:
-        summaries = [run_batch(path, lanes=lanes, dry_run=args.dry_run) for path in files]
+        summaries = [run_batch(path, lanes=lanes, dry_run=args.dry_run, title_exclude=title_exclude) for path in files]
     except config.MissingSecret as error:
         print(str(error), file=sys.stderr)
         return 3

@@ -45,6 +45,30 @@ def test_discord_without_token_is_a_core_miss():
     assert notify["state"] == "MISS" and "DISCORD_BOT_TOKEN" in notify["detail"]
 
 
+
+
+def test_unknown_location_reports_a_pointer():
+    import json as _json
+    with tempfile.TemporaryDirectory() as tmp:
+        doc = _json.loads((ROOT / "filters" / "example.json").read_text())
+        doc["filters"][0]["location"] = "US_WEST"
+        bad = Path(tmp) / "bad.json"
+        bad.write_text(_json.dumps(doc))
+        result = doctor(JOBKIT_FILTERS=str(bad))
+    payload = json.loads(result.stdout)
+    filters = next(check for check in payload["checks"] if check["name"] == "filters")
+    assert result.returncode == 1 and filters["state"] == "MISS"
+    assert "/filters/0/location" in filters["detail"], filters
+
+
+def test_optional_rows_do_not_decide_core_readiness():
+    result = doctor()
+    payload = json.loads(result.stdout)
+    assert payload["CORE_READY"] is True
+    browser = next((c for c in payload["checks"] if c["name"] == "browser"), None)
+    if browser and browser["state"] == "WARN":
+        assert payload["BROWSER_READY"] is False, "a browser WARN must not read as ready"
+
 if __name__ == "__main__":
     tests = [v for k, v in sorted(globals().items()) if k.startswith("test_")]
     for t in tests:

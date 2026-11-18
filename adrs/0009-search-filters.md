@@ -75,3 +75,11 @@ platform, finance-tech, model-risk or data-acquisition lanes.
 - The plan's "at most 25 new" gate was set before the window behavior was
   known. Cutting windows would have emptied the niche lanes, so the gate is
   enforced per run by the row cap instead (execution audit, 2026-10-06).
+
+## In this package (2026-11-17)
+
+The upstream archive (`filters/archive/2026-10-06-baseline.json`) and its git tag
+are not shipped. `filters/example.json` is the contract; its base is neutral
+(0-5 years, no pay floor, 7-day window) because a new user has no history to
+reproduce. `title_exclude`, `blocked_companies` and lane locations are read from
+that document only; nothing in a goal hardcodes them (ADR 0019).

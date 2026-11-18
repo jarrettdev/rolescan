@@ -42,7 +42,7 @@ def _parse_time_posted(series: pd.Series) -> pd.Series:
     return pd.to_timedelta(series.astype(str).str.replace('h', ' hours').str.replace('d', ' days').str.replace('daysays', 'days'))
 
 
-def ingest_listings(batch: pd.DataFrame, file_datetime, ledger: Ledger, title_exclude: str = SENIOR_WORDS) -> IngestResult:
+def ingest_listings(batch: pd.DataFrame, file_datetime, ledger: Ledger, title_exclude: str | None = SENIOR_WORDS) -> IngestResult:
     """Public goal entrypoint.
 
     batch: rows of one scrape CSV. file_datetime: when that scrape ran.
@@ -58,7 +58,8 @@ def ingest_listings(batch: pd.DataFrame, file_datetime, ledger: Ledger, title_ex
     df['Time Posted'] = _parse_time_posted(df['Time Posted'])
     df['Timestamp Posted'] = (file_datetime - df['Time Posted']).dt.strftime('%Y-%m-%d %H:%M:%S')
 
-    df = df[~df['Title'].str.contains(title_exclude, case=False, na=False)]
+    if title_exclude:
+        df = df[~df['Title'].str.contains(title_exclude, case=False, na=False)]
     df = df[~df['Title'].str.contains(SENIOR_ABBREV, case=True, na=False)]
 
     keep = []

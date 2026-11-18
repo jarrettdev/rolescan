@@ -65,8 +65,13 @@ SELECT = _load_goal("select-ats-postings", "select_ats_postings_goal")
 
 
 def blocked_companies():
-    """select-listings' blocked companies: one home, read from that goal."""
-    return _load_goal("select-listings", "select_listings_goal").BLOCKED_COMPANIES
+    """Blocked companies from the user's filters document (adrs/0019)."""
+    import json as _json
+    try:
+        doc = _json.loads(paths.filters_path().read_text())
+    except (OSError, ValueError):
+        doc = {}
+    return L.blocked_companies(doc)
 
 
 def in_cron_window(now):

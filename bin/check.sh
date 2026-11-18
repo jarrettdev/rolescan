@@ -39,7 +39,7 @@ done
 echo "== FIXTURE RUN"
 if out=$("$PY" process_stream.py --fixtures fixtures/run1 --dry-run --filters filters/example.json 2>&1); then
   echo "$out" | tail -2
-  echo "$out" | grep -q "matched=4" || { echo "FIXTURE:NOT_MET expected matched=4"; rc=1; }
+  echo "$out" | grep -q "matched=3" || { echo "FIXTURE:NOT_MET expected matched=3"; rc=1; }
 else
   echo "FIXTURE:NOT_MET"; echo "$out" | tail -5; rc=1
 fi

@@ -1,7 +1,8 @@
 # rolescan
-> A job scraper you can run for yourself: finds postings on employer ATS boards
-> and hiring.cafe, keeps a ledger so nothing is notified twice, and sends matches
-> to print, a webhook or Discord. No resume generation, no applying, no credentials.
+> Watches company hiring pages for new openings, keeps a ledger so nothing is
+> notified twice, and sends matches to print, a webhook or Discord. No resume
+> generation, no applying, no credentials.
+> Built with Natural Language Coding (NLC 0.8.0): https://github.com/Zygotic-AI/Natural-Language-Compiler
 
 ## Read, in order
 - AGENTS.md — the rules (no secrets, no posting without NOTIFY, change constraints first, state under data/, run the gates)

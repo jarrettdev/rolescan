@@ -9,3 +9,4 @@ __pycache__/
 *.pyc
 filters/active.json
 *.log
+.cache/

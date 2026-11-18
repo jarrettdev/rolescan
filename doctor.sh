@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
-# Is this clone ready? CORE_READY is offline; LIVE_READY and BROWSER_READY are optional.
+# Is this clone ready? CORE_READY is offline (the ats egress row is the one network check);
+# LIVE_READY and BROWSER_READY are optional.
 #   ./doctor.sh          human lines, exit 1 only when CORE_READY is false
 #   ./doctor.sh --json   machine-readable states
 set -uo pipefail
@@ -15,8 +16,14 @@ core, live, browser = [], [], []
 problems = []
 
 def row(state, name, detail):
-    target = {"PASS": core, "MISS": core, "WARN": live, "SKIP": browser}.get(state)
-    (target if target is not None else core).append((state, name, detail))
+    # Route by what the row measures, not by its state: a browser WARN must not
+    # count as LIVE_READY, and an egress PASS must not count as CORE_READY.
+    if name == "browser":
+        browser.append((state, name, detail))
+    elif name == "ats egress":
+        live.append((state, name, detail))
+    else:
+        core.append((state, name, detail))
     if state == "MISS":
         problems.append(name)
 
@@ -54,7 +61,13 @@ else:
         elif not doc.get("filters"):
             row("MISS", "filters", f"{filters}: no filters[] entries")
         else:
-            row("PASS", "filters", f"{filters} ({len(doc['filters'])} lanes)")
+            locations = doc.get("locations") or {}
+            bad = [(i, f.get("location")) for i, f in enumerate(doc["filters"]) if f.get("location") not in locations]
+            if bad:
+                index, name = bad[0]
+                row("MISS", "filters", f"{filters}: /filters/{index}/location {name!r} is not a key in /locations")
+            else:
+                row("PASS", "filters", f"{filters} ({len(doc['filters'])} lanes)")
     except (ValueError, OSError) as error:
         row("MISS", "filters", f"{filters}: {error}")
 
@@ -94,8 +107,8 @@ core_ready = not problems
 if JSON:
     print(json.dumps({
         "CORE_READY": core_ready,
-        "LIVE_READY": all(state != "WARN" or name != "ats egress" for state, name, _ in live),
-        "BROWSER_READY": all(state == "PASS" for state, name, _ in browser),
+        "LIVE_READY": any(state == "PASS" for state, _, _ in live),
+        "BROWSER_READY": any(state == "PASS" for state, _, _ in browser),
         "checks": [{"state": s, "name": n, "detail": d} for s, n, d in core + live + browser],
     }, indent=1))
 else:

@@ -214,6 +214,26 @@ def test_drop_folder_lives_under_the_data_root():
         assert '"drop"' in text and private_home not in text, f
 
 
+
+
+def test_blocked_companies_come_from_the_filters_document():
+    import json as _json
+    with tempfile.TemporaryDirectory() as tmp:
+        doc = _json.loads((ROOT / "filters" / "example.json").read_text())
+        doc["blocked_companies"] = ["acme"]
+        path = Path(tmp) / "filters.json"
+        path.write_text(_json.dumps(doc))
+        old = os.environ.get("JOBKIT_FILTERS")
+        os.environ["JOBKIT_FILTERS"] = str(path)
+        try:
+            blocked = P.blocked_companies()
+        finally:
+            if old is None:
+                os.environ.pop("JOBKIT_FILTERS", None)
+            else:
+                os.environ["JOBKIT_FILTERS"] = old
+    assert "acme" in blocked, blocked
+
 if __name__ == "__main__":
     tests = [v for k, v in sorted(globals().items()) if k.startswith("test_")]
     for t in tests:
