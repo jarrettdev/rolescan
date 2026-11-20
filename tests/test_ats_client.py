@@ -170,7 +170,7 @@ def test_list_board_greenhouse_shapes_postings():
 def test_cache_lives_under_the_data_root():
     from pathlib import Path
     import adapters.ats as A
-    cache = A.cache_dir()
+    cache = A.default_cache_dir()
     assert "data" in Path(cache).parts, f"cache is not under data: {cache}"
 
 if __name__ == "__main__":

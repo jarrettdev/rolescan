@@ -34,7 +34,7 @@ FLOOR_S = 0.5
 HOST_5XX_LIMIT = 3  # 5xx answers from one host in a run before it is left alone
 TIMEOUT_S = 15
 BUDGET_S = 720
-def cache_dir() -> Path:
+def default_cache_dir() -> Path:
     """Resolved at use time so JOBKIT_DATA changed after import still wins."""
     from adapters import paths
     return paths.data_root() / ".cache" / "ats"
@@ -63,7 +63,7 @@ class Client:
 
     def __init__(self, cache_dir=None, floor_s=FLOOR_S, timeout_s=TIMEOUT_S, budget_s=BUDGET_S,
                  clock=time.monotonic, sleep=time.sleep):
-        self.cache_dir = Path(cache_dir) if cache_dir else cache_dir()
+        self.cache_dir = Path(cache_dir) if cache_dir else default_cache_dir()
         self.floor_s, self.timeout_s, self.budget_s = floor_s, timeout_s, budget_s
         self.clock, self.sleep = clock, sleep
         self.started = clock()
