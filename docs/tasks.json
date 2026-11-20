@@ -81,6 +81,18 @@
       ],
       "gate": "bin/check.sh",
       "fixture": "fixtures/run1"
+    },
+    {
+      "id": "install",
+      "task": "Install on another platform: Linux, macOS, WSL2 or Docker",
+      "files": [
+        "docs/INSTALL.md",
+        "README.md",
+        "setup.sh",
+        "doctor.sh"
+      ],
+      "gate": "bin/check.sh",
+      "fixture": "docs/INSTALL.md"
     }
   ]
 }

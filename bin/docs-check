@@ -100,6 +100,21 @@ def main(argv: list[str]) -> int:
     personas = sorted((ROOT / "filters" / "personas").glob("*.json"))
     if len(personas) < 4 or not (ROOT / "bin" / "personas").exists():
         problems.append("filters/personas lost its test users or bin/personas is missing")
+    install = ROOT / "docs" / "INSTALL.md"
+    if not install.exists():
+        problems.append("docs/INSTALL.md is missing")
+    else:
+        text = install.read_text()
+        for heading in ("## Linux", "## macOS", "## WSL2", "## Docker"):
+            if heading not in text:
+                problems.append(f"docs/INSTALL.md lost {heading}")
+        if "native windows is untested" not in text.lower():
+            problems.append("docs/INSTALL.md must say native Windows is untested")
+        if text.count("```") < 8:
+            problems.append("docs/INSTALL.md lost its command blocks")
+        readme = (ROOT / "README.md").read_text()
+        if "docs/INSTALL.md" not in readme:
+            problems.append("README.md does not link docs/INSTALL.md")
     third = (ROOT / "docs" / "third-party.md").read_text()
     if "HC_SOLVE_CAPTCHA" not in third:
         problems.append("docs/third-party.md lost the captcha-opt-in line")

@@ -5,6 +5,7 @@ already seen, and tells you when something matches the searches you set. It
 does not apply for you, does not write resumes, and sends nothing anywhere
 except the alerts you choose.
 
+Platform install (Linux, macOS, WSL2, Docker): [`docs/INSTALL.md`](docs/INSTALL.md).
 Built with [Natural Language Compiler](https://github.com/Zygotic-AI/Natural-Language-Compiler)
 (NLC 0.8.0): the rules, filters and gates are written down, so a model can read
 them and stay inside them. See `AGENTS.md`.

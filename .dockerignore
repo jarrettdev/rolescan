@@ -1,0 +1,10 @@
+.git
+venv
+.venv
+data
+dist
+__pycache__
+*.pyc
+.env
+.nlc-web
+filters/active.json

@@ -13,6 +13,7 @@ Read `AGENTS.md` first: its rules override anything here.
 | **rules**: Add or retire an invariant: rule marker, adopted list, enforcement entry | `rules/adopted.json`, `rules/enforced_by.json`, `adrs/` | `bin/check-nlc.sh` | `rules/adopted.json` |
 | **release**: Cut a release: provenance, manifest, tarball | `MANIFEST.txt`, `PROVENANCE.md`, `SOURCE_COMMIT` | `bin/check.sh` | `MANIFEST.txt` |
 | **personas**: Check the whole path with no keys: four test users write CSV results from the fixtures | `bin/personas`, `filters/personas`, `process_stream.py` | `bin/check.sh` | `fixtures/run1` |
+| **install**: Install on another platform: Linux, macOS, WSL2 or Docker | `docs/INSTALL.md`, `README.md`, `setup.sh`, `doctor.sh` | `bin/check.sh` | `docs/INSTALL.md` |
 
 ## Loop
 

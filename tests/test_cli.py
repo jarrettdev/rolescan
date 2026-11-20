@@ -36,6 +36,10 @@ def test_doctor_json_keys_and_paths():
     payload = json.loads(result.stdout.split("\npython=")[0])
     assert set(payload) == {"CORE_READY", "LIVE_READY", "BROWSER_READY", "checks"}, payload.keys()
     assert all(set(check) == {"state", "name", "detail"} for check in payload["checks"])
+    lines = dict(line.split("=", 1) for line in result.stdout.splitlines() if "=" in line and not line.startswith("{"))
+    for key in ("python", "clone", "data"):
+        assert key in lines, lines
+        assert Path(lines[key]).exists(), lines[key]
 
 
 def test_ingest_writes_csv_and_reports_matches():
